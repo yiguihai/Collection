@@ -1,0 +1,83 @@
+yum update
+更新软件源。
+
+yum -y install autoconf gettext libltdl* libevent git libsodium libevent* libtool-ltdl-devel
+yum -y groupinstall 'Development Tools'
+
+如果你是debian/ubuntu用户，可以尝试运行
+
+apt-get install libsodium*
+
+libsodium这个库低版本centos可能没有……于是自己下载编译：
+
+下载地址http://download.libsodium.org/libsodium/releases/
+
+我选择的是当前最新的libsodium(下载可能会卡,毕竟服务器在国外)：
+
+
+cd ~
+wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
+tar xf LATEST.tar.gz
+cd libsodium*
+解压好就进去编译安装：
+
+
+
+CFLAGS="-O3 -fPIC" ./configure
+./autogen.sh
+./configure
+make
+make install
+ldconfig
+
+至此libsodium安装完毕。
+
+我用最新的ubuntu百衲衣似乎没什么问题，centos软件源上的libevent也不是最新的，而服务端要求2.0以上的版本，软件源提供的是1.4版本，因此导致编译出错。二话不说跑去官网下载源码编译：
+
+下载地址：http://libevent.org/
+
+我选择的是当前最新的稳定版本：
+
+release-2.1.6-beta
+2016.08.27
+下载解压:
+
+
+
+https://codeload.github.com/libevent/libevent/zip/release-2.1.6-beta
+unzip release*
+cd libevent*
+编译安装：
+
+./configure --prefix=/usr
+./autogen.sh
+./configure
+make 
+make install
+echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+ldconfig
+
+至此libevent安装完毕。
+
+现在可以下载dnscrypt-wrapper源码来编译了：
+
+
+cd ~
+git clone --recursive git://github.com/Cofyc/dnscrypt-wrapper.git
+cd dnscrypt-wrapper
+make configure
+./configure
+
+
+dnscrypt-wrapper --gen-provider-keypair --provider-name=2.dnscrypt-cert.yiguihai.me --ext-address=96.8.118.245
+
+dnscrypt-wrapper --gen-crypt-keypair --crypt-secretkey-file=./ssl.key
+
+dnscrypt-wrapper --gen-cert-file --crypt-secretkey-file=./ssl.key --provider-publickey-file=./public.key --provider-secretkey-file=./secret.key --cert-file-expire-days=365 --provider-cert-file=ssl.cert
+
+dnscrypt-wrapper -r 8.8.8.8:53 -a 0.0.0.0:443 --crypt-secretkey-file=ssl.key --provider-cert-file=./ssl.cert --provider-name=2.dnscrypt-cert.yiguihai.me -VVV
+
+
+https://github.com/cofyc/dnscrypt-wrapper
+https://03k.org/centos-make-dnscrypt-wrapper.html
+https://03k.org/dnscrypt-wrapper-usage.html
