@@ -1,18 +1,25 @@
 dns="114.114.114.114"
 domain_name=(
+	#腾讯视频(通用)
 	vv.video.qq.com
 	sec.video.qq.com
+	#优酷视频(手机网页版)
 	api.youku.com
 	statis.api.3g.youku.com
 	static.youku.com
+	#爱奇艺(手机网页版)
 	data.video.iqiyi.com
 	cache.m.iqiyi.com
+	#网易云音乐(安卓客户端)
 	music.163.com
 	nstool.netease.com
 	music.httpdns.c.163.com
+	#QQ音乐(手机网页版)
 	c.y.qq.com
 	u.y.qq.com
+	#酷狗音乐(手机网页版)
 	m.kugou.com
+	#酷我音乐(手机网页版)
 	m.kuwo.cn
 )
 
