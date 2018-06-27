@@ -1,8 +1,8 @@
  x=0
 
-	ip_list=`nslookup bangumi.bilibili.com 8.8.8.8 | egrep -o '[0-9]{1,3}(\.[0-9]{1,3}){3}'|egrep -v $dns` 
+	ip_list=$(nslookup bangumi.bilibili.com 8.8.8.8 | egrep -o '[0-9]{1,3}(\.[0-9]{1,3}){3}'|egrep -v 8.8.8.8)
 	
-	for j in $ip_list do
+	for j in ${ip_list}; do
 
 		((x++))
 
