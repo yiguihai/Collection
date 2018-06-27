@@ -1,5 +1,5 @@
 dns="114.114.114.114"
-domain_name=(
+domain_list=(
 	#腾讯视频(通用)
 	vv.video.qq.com
 	sec.video.qq.com
@@ -24,8 +24,8 @@ domain_name=(
 )
 
 x=0
-for ((i=1;i<=${#domain_name[@]};i++ )); do
-hint="${domain_name[$i-1]}"
+for ((i=1;i<=${#domain_list[@]};i++ )); do
+hint="${domain_list[$i-1]}"
 ip_list=$(nslookup $hint $dns | egrep -o '[0-9]{1,3}(\.[0-9]{1,3}){3}'|egrep -v $dns)
 echo "$hint"
 for j in ${ip_list}; do
