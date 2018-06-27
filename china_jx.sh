@@ -14,7 +14,7 @@ domain_name=(
 	music.163.com
 	nstool.netease.com
 	music.httpdns.c.163.com
-	#QQ音乐(手机网页版)
+	#QQ音乐(安卓客户版)
 	c.y.qq.com
 	u.y.qq.com
 	#酷狗音乐(手机网页版)
