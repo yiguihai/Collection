@@ -6,7 +6,7 @@ for i in $domain_name
 
 do
 
-ip_list=`nslookup $i $dns | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'|egrep -v $dns`
+ip_list=`nslookup $i $dns | egrep -o '[0-9]{1,3}(\.[0-9]{1,3}){3}'|egrep -v $dns`
 
 for j in $ip_list
 
