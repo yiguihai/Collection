@@ -31,6 +31,6 @@ echo "$hint"
 for j in ${ip_list}; do
   ((x++))
   iptables -t nat -A out_forward -p tcp -d $j -j DNAT --to-destination 127.0.0.1:3129
-	done
+ done
 done
 echo "共 $[i-1] 个域名，已添加 $x 条规则 (使用 $dns DNS解析)"
