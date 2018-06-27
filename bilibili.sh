@@ -1,3 +1,4 @@
+x=0
 dns="8.8.8.8"
 
 domain_name="bangumi.bilibili.com"
@@ -13,7 +14,9 @@ for j in $ip_list
 do
 
 iptables -t nat -A out_forward -p tcp -d $j -j DNAT --to-destination 127.0.0.1:3128
-
+((x++))
 done
 
 done
+
+echo "$x 個"
