@@ -11,3 +11,8 @@
 	done
 
 echo "已添加 $x 条规则"
+#iptables -t nat -N out_forward
+
+#iptables -t nat -A OUTPUT -p tcp ! -d 127.0.0.1 -j out_forward
+
+#bash <(curl -sL https://raw.githubusercontent.com/yiguihai/Collection/master/taiwan_jx.sh)
