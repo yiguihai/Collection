@@ -34,6 +34,7 @@ for j in ${ip_list}; do
  done
 done
 echo "共 $[i-1] 个域名，已添加 $x 条规则 (使用 $dns DNS解析)"
+#apt-get install dnsutils
 #iptables -t nat -N out_forward
 #iptables -t nat -A OUTPUT -p tcp ! -d 127.0.0.1 -j out_forward
 #bash <(curl -sL https://raw.githubusercontent.com/yiguihai/Collection/master/china_jx.sh)
