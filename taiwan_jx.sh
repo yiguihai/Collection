@@ -11,6 +11,7 @@
 	done
 
 echo "已添加 $x 条规则"
+#apt-get install dnsutils
 #iptables -t nat -N out_forward
 
 #iptables -t nat -A OUTPUT -p tcp ! -d 127.0.0.1 -j out_forward
