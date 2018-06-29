@@ -5,3 +5,4 @@ do
 curl http://ip.cn/$i
 
 done
+#bash <(curl -sL https://raw.githubusercontent.com/yiguihai/Collection/master/ipaddress.sh)
