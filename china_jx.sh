@@ -23,6 +23,8 @@ domain_list=(
 	m.kugou.com
 	#酷我音乐(手机网页版)
 	m.kuwo.cn
+	#ip测试
+	ip.cn
 )
 
 x=0
