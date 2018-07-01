@@ -12,6 +12,8 @@ domain_list=(
 	cache.m.iqiyi.com
 	#网易云音乐(安卓客户端)
 	music.163.com
+	mam.netease.com
+	mr.da.netease.com
 	nstool.netease.com
 	music.httpdns.c.163.com
 	#QQ音乐(安卓客户版)
