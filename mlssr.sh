@@ -137,6 +137,12 @@ for ((i=1;i<=${#array[@]};i++)); do
     EXIT
   fi
 done
+if [[ ! -s /sdcard/mlssr.ini ]]; then
+  echo "开始下载脚本配置"
+  curl -sL https://github.com/yiguihai/Collection/raw/master/mlssr.ini > /sdcard/mlssr.ini
+  echo -e "请配置好${RED}/sdcard/mlssr.ini${SET}文件再运行！"
+  EXIT
+fi
 if [ ! -x $dir/ssr-local ]; then
   echo "开始下载ssr-local"
   curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
@@ -144,9 +150,7 @@ if [ ! -x $dir/ssr-local ]; then
 fi
 if [ ! -s /sdcard/ssr-local.conf ]; then
   echo "开始下载ssr-local.conf"
-  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local.conf > /sdcard/ssr-local.conf
-  echo -e "请配置好${RED}/sdcard/ssr-local.conf${SET}文件再运行！"
-  EXIT
+  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local.conf > $dir/ssr-local.conf
 fi
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
 for ((i=${#host[@]};i>=1;i--)); do
