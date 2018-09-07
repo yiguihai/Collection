@@ -40,24 +40,24 @@ if [[ $flow != "" ]]; then
 fi
 done
 }
-
+       
 ssr(){
 pkill ssr-local 2> /dev/null
-cat > /sdcard/ssr-local.conf<<-EOF
+cat > $dir/ssr-local.conf<<-EOF
 {
-"server": "155.94.190.151", 
-"server_port": 9999, 
+"server": "$server", 
+"server_port": $server_port, 
 "local_port": 1088, 
-"password": "9999", 
-"method":"chacha20", 
+"password": "$password", 
+"method":"$method", 
 "timeout": 600, 
-"protocol": "auth_sha1_v4", 
-"obfs": "http_simple", 
-"obfs_param": "$1", 
-"protocol_param": ""
+"protocol": "$protocol", 
+"obfs": "$obfs", 
+"obfs_param": "$obfs_param", 
+"protocol_param": "$protocol_param"
 }
 EOF
-$dir/ssr-local -l 1088 -b 127.0.0.1 -c /sdcard/ssr-local.conf -f $dir/ssr.pid 2> /dev/null
+$dir/ssr-local -l 1088 -b 127.0.0.1 -c $dir/ssr-local.conf -f $dir/ssr.pid 2> /dev/null
 if [ $? -ne 0 ]; then
   echo -e "${RED}启动ssr失败!${SET}"
   EXIT
@@ -85,7 +85,7 @@ airplane(){
 echo "打开飞行模式"
 su -c settings put global airplane_mode_on 1
 su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
-echo "脚本进入休眠状态，等待运营商流量数据更新(20分钟)…"
+echo "脚本进入休眠状态，等待运营商流量数据更新…"
 sleep $1 2> /dev/null
 echo "关闭飞行模式(1分钟)"
 su -c settings put global airplane_mode_on 0
@@ -142,13 +142,15 @@ if [[ ! -s /sdcard/mlssr.ini ]]; then
   curl -sL https://github.com/yiguihai/Collection/raw/master/mlssr.ini > /sdcard/mlssr.ini
   echo -e "请配置好${RED}/sdcard/mlssr.ini${SET}文件再运行！"
   EXIT
+else
+  source /sdcard/mlssr.ini
 fi
 if [ ! -x $dir/ssr-local ]; then
   echo "开始下载ssr-local"
   curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
   chmod +x $dir/ssr-local
 fi
-if [ ! -s /sdcard/ssr-local.conf ]; then
+if [ ! -s $dir/ssr-local.conf ]; then
   echo "开始下载ssr-local.conf"
   curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local.conf > $dir/ssr-local.conf
 fi
@@ -161,17 +163,16 @@ for ((i=${#host[@]};i>=1;i--)); do
     echo "获取已使用流量 $flow"
     echo -e "正在测试: ${GREEN}$hosts${SET}"
     echo "开始启动SSRR"
-    ssr $hosts
+    #ssr $server $server_port $password $method $protocol $obfs $obfs_param $protocol_param
+    ssr
     echo "开始下载测试文件..."
     download
-    #关闭网络20分钟后再查询
-    airplane 1200
+    airplane $s1
     #等待1分钟恢复信号
     sleep 60
-    echo "开始发送查询短信(5分钟)"
-    termux-sms-send -n 10010 "1501"
-    #设定发送5分钟后再查返回短信
-    sleep 300
+    echo "开始发送查询短信"
+    termux-sms-send -n $cxyys "$cxzl"
+    sleep $s2
     echo "开始对比流量信息\n"
     check $(flow) $flow
     echo
