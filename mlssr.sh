@@ -53,7 +53,7 @@ cat > $dir/ssr-local.conf<<-EOF
 "timeout": 600, 
 "protocol": "$protocol", 
 "obfs": "$obfs", 
-"obfs_param": "$obfs_param", 
+"obfs_param": "$1", 
 "protocol_param": "$protocol_param"
 }
 EOF
@@ -150,10 +150,6 @@ if [ ! -x $dir/ssr-local ]; then
   curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
   chmod +x $dir/ssr-local
 fi
-if [ ! -s $dir/ssr-local.conf ]; then
-  echo "开始下载ssr-local.conf"
-  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local.conf > $dir/ssr-local.conf
-fi
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
 for ((i=${#host[@]};i>=1;i--)); do
   echo -e "共 ${WHITE}${#host[@]}${SET} 剩余数量 ${BLUE}$i${SET} 待测试"
@@ -163,8 +159,7 @@ for ((i=${#host[@]};i>=1;i--)); do
     echo "获取已使用流量 $flow"
     echo -e "正在测试: ${GREEN}$hosts${SET}"
     echo "开始启动SSRR"
-    #ssr $server $server_port $password $method $protocol $obfs $obfs_param $protocol_param
-    ssr
+    ssr $hosts
     echo "开始下载测试文件..."
     download
     airplane $s1
