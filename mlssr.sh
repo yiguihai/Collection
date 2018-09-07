@@ -1,6 +1,9 @@
 #!/system/bin/sh 
 #
 #免流Host自动化测试脚本
+#需要执行安装 pkg install -y curl bc jq
+#软件需要安装 termux-api 开关飞行模式需要root权限
+#bash <(curl -sL https://raw.githubusercontent.com/yiguihai/Collection/master/mlssr.sh)
 #
 dir="/data/data/com.termux/files/home"
 DARKGRAY='\033[1;30m'
@@ -62,8 +65,9 @@ fi
 }
 
 download(){
+#dd if=/dev/zero of=/sdcard/10M bs=1M count=10
 rm $dir/test.file 2> /dev/null
-curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/binary/raw/master/10M > $dir/test.file
+curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/Collection/raw/master/10M > $dir/test.file
 if [ $? -ne 0 ]; then
   echo -e "${RED}下载失败!${SET}"
   EXIT
@@ -135,11 +139,13 @@ for ((i=1;i<=${#array[@]};i++)); do
 done
 if [ ! -x $dir/ssr-local ]; then
   echo "开始下载ssr-local"
+  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
   chmod +x $dir/ssr-local
 fi
 if [ ! -s /sdcard/ssr-local.conf ]; then
   echo "开始下载ssr-local.conf"
-  echo -e "请到配置好${RED}/sdcard/ssr-local.conf${SET}文件再运行！"
+  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local.conf > /sdcard/ssr-local.conf
+  echo -e "请配置好${RED}/sdcard/ssr-local.conf${SET}文件再运行！"
   EXIT
 fi
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
@@ -168,4 +174,3 @@ for ((i=${#host[@]};i>=1;i--)); do
   fi
 done
 EXIT
-#dd if=/dev/zero of=/sdcard/10M bs=1M count=10
