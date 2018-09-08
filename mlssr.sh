@@ -32,6 +32,15 @@ array=(
 "am"
 )
 
+waiting(){
+local secs=$(($1))
+while [ $secs -gt 0 ]; do
+   echo -ne "$secs\033[0K\r"
+   sleep 1
+   : $((secs--))
+done
+}
+
 message(){
 local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
 local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
@@ -129,7 +138,11 @@ for ((i=1;i<=${#array[@]};i++)); do
   type ${array[$i]} 1>/dev/null
   if [ $? -ne 0 ]; then
     echo -e "缺少 ${RED}${array[$i]}${SET} 命令"
-    EXIT
+    pkg install -y $i 1> /dev/null
+    if [ $? -ne 0 ]; then
+      echo -e "安装 ${RED}${array[$i]}${SET} 失败"
+      EXIT
+    fi
   fi
 done
 if [ ! -x $dir/ssr-local ]; then
@@ -165,7 +178,7 @@ for ((i=${#host[@]};i>=1;i--)); do
     su -c settings put global airplane_mode_on 1
     su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
     echo -e "${YELLOW}脚本进入休眠状态，等待运营商流量数据更新[约$((pause/60))分钟]…${SET}"
-    sleep $pause 2> /dev/null
+    waiting $pause 2> /dev/null
     echo "关闭飞行模式"
     su -c settings put global airplane_mode_on 0
     su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false 1> /dev/null
@@ -175,7 +188,7 @@ for ((i=${#host[@]};i>=1;i--)); do
       if [[ $data_state == "connected" ]]; then
         break
       else
-        sleep 5
+        waiting 5
       fi
     done
     echo "开始发送查询短信"
@@ -186,7 +199,7 @@ for ((i=${#host[@]};i>=1;i--)); do
       if [[ $message_state != $old_received ]]; then
         break
       else
-        sleep 5
+        waiting 5
       fi
     done
     echo "开始对比流量信息..."
