@@ -71,7 +71,7 @@ fi
 echo "等待确认ssr-local启动完成..."
 while true; do
   nc 127.0.0.1 1088 < /dev/null 2> /dev/null
-  if [[ $? -eq 0 ]]; then
+  if [[ $? -eq 0 || $(netstat -lntp|grep 'LISTEN'|grep '127.0.0.1:1088') != "" ]]; then
     break
   else
     sleep 1
@@ -103,7 +103,7 @@ if [[ $1 == "" || $2 == "" ]]; then
 fi
 local result=$(echo "$1-$2"|bc)
 if [[ $(echo "($1 - $2) > 6"|bc) -eq 1 ]]; then
-  echo -e "${YELLOW}亲测这个Host不免流量${SET}\r"
+  echo -e "${YELLOW}亲测这个混淆Host不免流量${SET}"
 fi
 if [[ $(echo "($1 - $2) < 2"|bc) -eq 1 ]]; then
   echo -e "${CYAN}这个混淆Host可能免流量${SET}\r"
@@ -111,7 +111,7 @@ if [[ $(echo "($1 - $2) < 2"|bc) -eq 1 ]]; then
   termux-vibrate -d 1000
   echo -e "$3\n" >> /sdcard/测试结果.txt
 fi
-echo -e "本次消耗${RED}$result${SET}"
+echo -e "消耗${RED}$result${SET}"
 }
 
 EXIT(){
