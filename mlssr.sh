@@ -37,7 +37,7 @@ local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
 local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
 export received=$(termux-sms-list -l 1|jq -r '.[0]["received"]')
 local sms=$(termux-sms-list -l 1|jq -r '.[0]["body"]'|egrep -o '[0-9]{2,}\.[1-9][0-9]')
-if [[ $typ == "inbox" && $num == "10010" && $(echo "$sms > 0"|bc) -eq 1 ]]; then
+if [[ $typ == "inbox" && $num == "$cxyys" && $(echo "$sms > 0"|bc) -eq 1 ]]; then
   export flow=$sms
 else
   echo -e "${RED}获取流量信息失败!${SET}"
@@ -80,15 +80,15 @@ done
 }
 
 download(){
-#dd if=/dev/zero of=/sdcard/10M bs=1M count=10
+#dd if=/dev/zero of=/sdcard/5M bs=1M count=5
 rm $dir/test.file 2> /dev/null
-curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/Collection/raw/master/10M -o $dir/test.file
+curl -x socks5://127.0.0.1:1088 -L https://github.com/yiguihai/Collection/raw/master/5M -o $dir/test.file
 if [ $? -ne 0 ]; then
   echo -e "${RED}下载失败!${SET}"
   EXIT
 fi
 local size=$(($(wc -c < "$dir/test.file")+0))
-if [[ ! -f $dir/test.file||$size -ne 10485760 ]]; then
+if [[ ! -f $dir/test.file||$size -ne 5242880 ]]; then
   echo -e "${RED}下载文件大小不一致!${SET}"
   EXIT
 else
@@ -101,11 +101,11 @@ if [[ $1 == "" || $2 == "" ]]; then
   echo -e "${RED}获取传送参数有误!${SET}"
   EXIT
 fi
-local result=$(echo "$1-$2"|bc)
-if [[ $(echo "($1 - $2) > 6"|bc) -eq 1 ]]; then
+local result=$(printf "%.2f" $(echo "$1-$2"|bc))
+if [[ $(echo "($1-$2)>3.00"|bc) -eq 1 ]]; then
   echo -e "${YELLOW}亲测这个混淆Host不免流量${SET}"
 fi
-if [[ $(echo "($1 - $2) < 2"|bc) -eq 1 ]]; then
+if [[ $(echo "($1-$2)<1.50"|bc) -eq 1 ]]; then
   echo -e "${CYAN}这个混淆Host可能免流量${SET}\r"
   termux-tts-speak "发现一个可能免流量的混淆 $3 消耗掉流量 $result"
   termux-vibrate -d 1000
@@ -124,7 +124,7 @@ exit 1
 }
 
 echo -e "开始检测运行环境..."
-echo -e "${RED}脚本使用正则匹配短信内容，如果发现获取的剩余流量有误请立即停止运行${SET}\n"
+echo -e "${RED}脚本使用正则匹配短信内容，如果发现获取的剩余流量有误请立即停止运行${SET}"
 for ((i=1;i<=${#array[@]};i++)); do
   type ${array[$i]} 1>/dev/null
   if [ $? -ne 0 ]; then
@@ -144,6 +144,7 @@ if [[ ! -s /sdcard/mlssr.ini ]]; then
   EXIT
 else
   source /sdcard/mlssr.ini
+  echo -e "混淆方式 ${BLUE}$obfs${SET} 远程端口 ${BLUE}$server_port${SET}\n"
 fi
 rm /sdcard/测试结果.txt 2> /dev/null
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
@@ -185,7 +186,7 @@ for ((i=${#host[@]};i>=1;i--)); do
       if [[ $message_state != $old_received ]]; then
         break
       else
-        sleep 5
+        sleep 1
       fi
     done
     echo "开始对比流量信息..."
