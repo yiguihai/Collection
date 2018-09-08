@@ -23,6 +23,7 @@ array=(
 "bc"
 "termux-sms-send"
 "termux-dialog"
+"termux-telephony-deviceinfo"
 "jq"
 "printf"
 "pkill"
@@ -30,15 +31,19 @@ array=(
 "am"
 )
 
-analysis(){
-echo $1 | while read line
-do
-local flow=$(echo $line|egrep -o '[0-9]{2,}\.[1-9][0-9]')
-if [[ $flow != "" ]]; then
-  echo $flow
-  break
+message(){
+local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
+local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
+export received=$(termux-sms-list -l 1|jq -r '.[0]["received"]')
+local sms=$(termux-sms-list -l 1|jq -r '.[0]["body"]'|egrep -o '[0-9]{2,}\.[1-9][0-9]')
+if [[ $typ == "inbox" && $num == "10010" && $(echo "$sms > 0"|bc) -eq 1 ]]; then
+  export flow=$sms
+else
+  echo -e "${RED}获取流量信息失败!${SET}"
+  termux-sms-send -n $cxyys "$cxzl"
+  echo "等待信息返回后再次重试，如果还失败就是不适用于你的手机。"
+  EXIT
 fi
-done
 }
        
 ssr(){
@@ -81,42 +86,19 @@ else
 fi
 }
 
-airplane(){
-echo "打开飞行模式"
-su -c settings put global airplane_mode_on 1
-su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
-echo "脚本进入休眠状态，等待运营商流量数据更新…"
-sleep $1 2> /dev/null
-echo "关闭飞行模式(1分钟)"
-su -c settings put global airplane_mode_on 0
-su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false 1> /dev/null
-}
-
-flow(){
-local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
-local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
-local sms=$(termux-sms-list -l 1|jq -r '.[0]["body"]')
-if [[ $typ == "inbox" && $num == "10010" ]]; then
-  local flow=$(analysis "$sms")
-else
-  echo -e "${RED}获取流量短信失败！${SET}"
-  EXIT
-fi
-if [[ $(echo "$flow > 0"|bc) -le 0 ]]; then
-  echo -e "${RED}获取流量信息异常${SET}"
-  EXIT
-fi
-printf "%.2f" $flow
-}
-
 check(){
+if [[ $1 == "" || $2 == "" ]]; then
+  echo -e "${RED}获取传送参数有误!${SET}"
+  EXIT
+fi
 if [[ $(echo "($1 - $2) > 4096"|bc) -eq 1 ]]; then
   echo -e "${YELLOW}亲测这个Host不免流量${SET}"
 fi
 if [[ $(echo "($1 - $2) < 1024"|bc) -eq 1 ]]; then
   echo -e "${CYAN}这个混淆Host可能免流量${SET}"
-  termux-tts-speak "发现一个可能免流量的混淆"
+  termux-tts-speak "发现一个可能免流量的混淆 $3"
   termux-vibrate -d 1000
+  echo -e "$3\n" >> /sdcard/测试结果.txt
 fi
 }
 
@@ -125,10 +107,11 @@ date +"%Y年%m月%d日 %H:%M:%S 脚本退出"
 rm $dir/test.file 2> /dev/null
 pkill ssr-local 2> /dev/null
 termux-vibrate -d 1500
+kill $$
 exit 1
 }
-clear
-echo -e "开始检测运行环境 ${YELLOW}$$${SET}"
+
+echo -e "开始检测运行环境..."
 echo -e "${RED}脚本使用正则匹配短信内容，如果发现获取的剩余流量有误请立即停止运行${SET}\n"
 for ((i=1;i<=${#array[@]};i++)); do
   type ${array[$i]} 1>/dev/null
@@ -137,39 +120,65 @@ for ((i=1;i<=${#array[@]};i++)); do
     EXIT
   fi
 done
+if [ ! -x $dir/ssr-local ]; then
+  echo "开始下载执行文件..."
+  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
+  chmod +x $dir/ssr-local
+fi
 if [[ ! -s /sdcard/mlssr.ini ]]; then
-  echo "开始下载脚本配置"
+  echo "开始下载脚本配置..."
   curl -sL https://github.com/yiguihai/Collection/raw/master/mlssr.ini > /sdcard/mlssr.ini
-  echo -e "请配置好${RED}/sdcard/mlssr.ini${SET}文件再运行！"
+  echo -e "请设置好${RED}/sdcard/mlssr.ini${SET}脚本配置文件再运行！"
   EXIT
 else
   source /sdcard/mlssr.ini
 fi
-if [ ! -x $dir/ssr-local ]; then
-  echo "开始下载ssr-local"
-  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
-  chmod +x $dir/ssr-local
-fi
+rm /sdcard/测试结果.txt 2> /dev/null
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
 for ((i=${#host[@]};i>=1;i--)); do
-  echo -e "共 ${WHITE}${#host[@]}${SET} 剩余数量 ${BLUE}$i${SET} 待测试"
-  hosts=${host[$i-1]}
-  flow=$(flow)
-  if [[ $hosts != "" ]]; then
-    echo "获取已使用流量 $flow"
+  echo -e "混淆Host总数 ${WHITE}${#host[@]}${SET} 剩余 ${BLUE}$i${SET} 待测试"
+  hosts=${host[$i-1]}  
+  if [[ $hosts != "" ]]; then    
+    message
+    old_flow=$flow
+    old_received=$received
+    printf "%s ${CYAN}%.2f${SET}\n" "已使用流量" $old_flow
     echo -e "正在测试: ${GREEN}$hosts${SET}"
-    echo "开始启动SSRR"
+    echo "开始启动执行文件"
     ssr $hosts
     echo "开始下载测试文件..."
     download
-    airplane $s1
-    #等待1分钟恢复信号
-    sleep 60
+    echo "打开飞行模式"
+    su -c settings put global airplane_mode_on 1
+    su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
+    echo -e "${YELLOW}脚本进入休眠状态，等待运营商流量数据更新…${SET}"
+    sleep $pause 2> /dev/null
+    echo "关闭飞行模式"
+    su -c settings put global airplane_mode_on 0
+    su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false 1> /dev/null
+    echo "等待数据网络恢复..."
+    while true; do
+      data_state=$(termux-telephony-deviceinfo|jq -r '.["data_state"]')
+      if [[ $data_state == "connected" ]]; then
+        break
+      else
+        sleep 5
+      fi
+    done
     echo "开始发送查询短信"
-    termux-sms-send -n $cxyys "$cxzl"
-    sleep $s2
-    echo "开始对比流量信息\n"
-    check $(flow) $flow
+    termux-sms-send -n $cxyys "$cxzl"    
+    echo "等待接收返回短信..."
+    while true; do
+      message_state=$(termux-sms-list -l 1|jq -r '.[0]["received"]')
+      if [[ $message_state != $old_received ]]; then
+        break
+      else
+        sleep 5
+      fi
+    done
+    echo "开始对比流量信息..."
+    message
+    check $flow $old_flow $hosts
     echo
   fi
 done
