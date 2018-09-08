@@ -36,8 +36,8 @@ message(){
 local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
 local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
 export received=$(termux-sms-list -l 1|jq -r '.[0]["received"]')
-local sms=$(termux-sms-list -l 1|jq -r '.[0]["body"]'|egrep -o '[0-9]{2,}\.[1-9][0-9]')
-if [[ $typ == "inbox" && $num == "$cxyys" && $(echo "$sms > 0"|bc) -eq 1 ]]; then
+local sms=$(termux-sms-list -l 1|jq '.[0]["body"]'|egrep -o '[0-9]{2,}\.[0-9][1-9]')
+if [[ $typ == "inbox" && $num == $cxyys && $(echo "$sms > 0"|bc) -eq 1 ]]; then
   export flow=$sms
 else
   echo -e "${RED}获取流量信息失败!${SET}"
@@ -186,7 +186,7 @@ for ((i=${#host[@]};i>=1;i--)); do
       if [[ $message_state != $old_received ]]; then
         break
       else
-        sleep 1
+        sleep 10
       fi
     done
     echo "开始对比流量信息..."
