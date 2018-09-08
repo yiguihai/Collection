@@ -82,7 +82,7 @@ done
 download(){
 #dd if=/dev/zero of=/sdcard/5M bs=1M count=5
 rm $dir/test.file 2> /dev/null
-curl -x socks5://127.0.0.1:1088 -L https://github.com/yiguihai/Collection/raw/master/5M -o $dir/test.file
+curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/Collection/raw/master/5M -o $dir/test.file
 if [ $? -ne 0 ]; then
   echo -e "${RED}下载失败!${SET}"
   EXIT
