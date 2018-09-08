@@ -168,7 +168,7 @@ for ((i=${#host[@]};i>=1;i--)); do
     message
     old_flow=$flow
     old_received=$received
-    printf "%s ${CYAN}%.2f${SET}\n" 已使用流量 $old_flow
+    printf "%s ${CYAN}%.2f${SET} %s ${GREEN}%s${SET}\n" 已使用流量 $old_flow 内网: $(ip address|egrep -o '10\.([0-9]{1,3}\.){2}[0-9]{1,3}')
     echo -e "正在测试: ${GREEN}$hosts${SET}"
     echo "开始启动执行文件"
     ssr $hosts
