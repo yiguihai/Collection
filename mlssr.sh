@@ -92,7 +92,7 @@ if [[ ! -f $dir/test.file||$size -ne 5242880 ]]; then
   echo -e "${RED}下载文件大小不一致!${SET}"
   EXIT
 else
-  echo "下载测试完成"
+  echo "下载测试文件完成"
 fi
 }
 
