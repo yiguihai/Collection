@@ -25,6 +25,7 @@ array=(
 "termux-dialog"
 "termux-telephony-deviceinfo"
 "jq"
+"nc"
 "printf"
 "pkill"
 "settings"
@@ -67,12 +68,21 @@ if [ $? -ne 0 ]; then
   echo -e "${RED}启动ssr失败!${SET}"
   EXIT
 fi
+echo "等待确认ssr-local启动完成..."
+while true; do
+  nc 127.0.0.1 1088 < /dev/null 2> /dev/null
+  if [[ $? -eq 0 ]]; then
+    break
+  else
+    sleep 1
+  fi
+done
 }
 
 download(){
 #dd if=/dev/zero of=/sdcard/10M bs=1M count=10
 rm $dir/test.file 2> /dev/null
-curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/Collection/raw/master/10M > $dir/test.file
+curl -x socks5://127.0.0.1:1088 -sL https://github.com/yiguihai/Collection/raw/master/10M -o $dir/test.file
 if [ $? -ne 0 ]; then
   echo -e "${RED}下载失败!${SET}"
   EXIT
@@ -91,15 +101,17 @@ if [[ $1 == "" || $2 == "" ]]; then
   echo -e "${RED}获取传送参数有误!${SET}"
   EXIT
 fi
-if [[ $(echo "($1 - $2) > 4096"|bc) -eq 1 ]]; then
-  echo -e "${YELLOW}亲测这个Host不免流量${SET}"
+local result=$(echo "$1-$2"|bc)
+if [[ $(echo "($1 - $2) > 6"|bc) -eq 1 ]]; then
+  echo -e "${YELLOW}亲测这个Host不免流量${SET}\r"
 fi
-if [[ $(echo "($1 - $2) < 1024"|bc) -eq 1 ]]; then
-  echo -e "${CYAN}这个混淆Host可能免流量${SET}"
-  termux-tts-speak "发现一个可能免流量的混淆 $3"
+if [[ $(echo "($1 - $2) < 2"|bc) -eq 1 ]]; then
+  echo -e "${CYAN}这个混淆Host可能免流量${SET}\r"
+  termux-tts-speak "发现一个可能免流量的混淆 $3 消耗掉流量 $result"
   termux-vibrate -d 1000
   echo -e "$3\n" >> /sdcard/测试结果.txt
 fi
+echo -e "本次消耗${RED}$result${SET}"
 }
 
 EXIT(){
@@ -122,12 +134,12 @@ for ((i=1;i<=${#array[@]};i++)); do
 done
 if [ ! -x $dir/ssr-local ]; then
   echo "开始下载执行文件..."
-  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local > $dir/ssr-local
+  curl -sL https://github.com/yiguihai/binary/raw/master/ssr-local -o $dir/ssr-local
   chmod +x $dir/ssr-local
 fi
 if [[ ! -s /sdcard/mlssr.ini ]]; then
   echo "开始下载脚本配置..."
-  curl -sL https://github.com/yiguihai/Collection/raw/master/mlssr.ini > /sdcard/mlssr.ini
+  curl -sL https://github.com/yiguihai/Collection/raw/master/mlssr.ini -o /sdcard/mlssr.ini
   echo -e "请设置好${RED}/sdcard/mlssr.ini${SET}脚本配置文件再运行！"
   EXIT
 else
@@ -136,7 +148,7 @@ fi
 rm /sdcard/测试结果.txt 2> /dev/null
 host=($(termux-dialog -t "输入需要测试的Host"|jq -r '.["text"]'))
 for ((i=${#host[@]};i>=1;i--)); do
-  echo -e "混淆Host总数 ${WHITE}${#host[@]}${SET} 剩余 ${BLUE}$i${SET} 待测试"
+  echo -e "总混淆 ${WHITE}${#host[@]}${SET} 剩余 ${BLUE}$i${SET} 待测试"
   hosts=${host[$i-1]}  
   if [[ $hosts != "" ]]; then    
     message
