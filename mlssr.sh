@@ -145,9 +145,9 @@ for ((i=${#host[@]};i>=1;i--)); do
     printf "%s ${CYAN}%.2f${SET}\n" 已使用流量 $old_flow
     echo -e "正在测试: ${GREEN}$hosts${SET}"
     echo "开始启动执行文件"
-    ssr $hosts
+    #ssr $hosts
     echo "开始下载测试文件..."
-    download
+    #download
     echo "打开飞行模式"
     su -c settings put global airplane_mode_on 1
     su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
