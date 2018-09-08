@@ -151,7 +151,7 @@ for ((i=${#host[@]};i>=1;i--)); do
     echo "打开飞行模式"
     su -c settings put global airplane_mode_on 1
     su -c am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true 1> /dev/null
-    echo -e "${YELLOW}脚本进入休眠状态，等待运营商流量数据更新…${SET}"
+    echo -e "${YELLOW}脚本进入休眠状态，等待运营商流量数据更新[约$((pause/60))分钟]…${SET}"
     sleep $pause 2> /dev/null
     echo "关闭飞行模式"
     su -c settings put global airplane_mode_on 0
