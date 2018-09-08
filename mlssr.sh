@@ -36,7 +36,7 @@ message(){
 local typ=$(termux-sms-list -l 1|jq -r '.[0]["type"]')
 local num=$(termux-sms-list -l 1|jq -r '.[0]["number"]')
 export received=$(termux-sms-list -l 1|jq -r '.[0]["received"]')
-local sms=$(termux-sms-list -l 1|jq '.[0]["body"]'|egrep -o '[0-9]{2,}\.[0-9][1-9]')
+local sms=$(termux-sms-list -l 1|jq '.[0]["body"]'|egrep -o '[0-9]{1,5}\.[0-9][1-9]')
 if [[ $typ == "inbox" && $num == $cxyys && $(echo "$sms > 0"|bc) -eq 1 ]]; then
   export flow=$sms
 else
