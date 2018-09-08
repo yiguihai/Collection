@@ -102,7 +102,7 @@ if [[ $1 == "" || $2 == "" ]]; then
   EXIT
 fi
 local result=$(printf "%.2f" $(echo "$1-$2"|bc))
-if [[ $(echo "($1-$2)>3.00"|bc) -eq 1 ]]; then
+if [[ $(echo "($1-$2)>1.50"|bc) -eq 1 ]]; then
   echo -e "${YELLOW}亲测这个混淆Host不免流量${SET}"
 fi
 if [[ $(echo "($1-$2)<1.50"|bc) -eq 1 ]]; then
@@ -111,7 +111,7 @@ if [[ $(echo "($1-$2)<1.50"|bc) -eq 1 ]]; then
   termux-vibrate -d 1000
   echo -e "$3\n" >> /sdcard/测试结果.txt
 fi
-echo -e "消耗${RED}$result${SET}"
+echo -e "测试流量消耗 ${RED}$result${SET}"
 }
 
 EXIT(){
@@ -186,7 +186,7 @@ for ((i=${#host[@]};i>=1;i--)); do
       if [[ $message_state != $old_received ]]; then
         break
       else
-        sleep 10
+        sleep 5
       fi
     done
     echo "开始对比流量信息..."
