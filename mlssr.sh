@@ -41,7 +41,7 @@ cut
 base64
 )
 
-ciphers=(
+ciphers_array=(
 none
 table
 rc4
@@ -62,7 +62,7 @@ chacha20
 chacha20-ietf
 )
 
-protocols=(
+protocols_array=(
 origin
 verify_simple
 verify_sha1
@@ -78,7 +78,7 @@ auth_chain_e
 auth_chain_f
 )
 
-obfs=(
+obfs_array=(
 plain
 http_simple
 http_post
@@ -86,7 +86,7 @@ tls_simple
 tls1.2_ticket_auth
 )
 
-mode_list=(
+mode_array=(
 关闭数据网络
 打开飞行模式
 )
@@ -212,20 +212,20 @@ done
 echo -e "\n${WHITE}${pause}${SET}\n"
 unset -v mode
 until [ $mode ]; do
-  echo -e "等待期间断网方式:" 
+  echo -e "等待期间断网方式(推荐飞行模式):" 
   local x=0
-  for i in ${mode_list[@]}; do
+  for i in ${mode_array[@]}; do
     ((x++))
     echo -e "$x $i"
   done
   read mode
-  if [[ $mode -gt 0 && $mode -le ${#mode_list[@]} ]]; then
+  if [[ $mode -gt 0 && $mode -le ${#mode_array[@]} ]]; then
     break
   else
     unset -v mode
   fi
 done
-echo -e "\n${WHITE}${mode_list[$mode-1]}${SET}\n"
+echo -e "\n${WHITE}${mode_array[$mode-1]}${SET}\n"
 echo -e "短信查询业务指令(如: ${YELLOW}cxll${SET}):"
 read cxzl
 [ -z $cxzl ]&&cxzl=cxll
@@ -265,21 +265,21 @@ read password
 [ -z $password ]&&password='admin'
 echo -e "\n${WHITE}${password}${SET}\n"
 echo -e "加密方法:"
-select method in ${ciphers[@]}; do
+select method in ${ciphers_array[@]}; do
   if [ $method ]; then
     break
   fi
 done
 echo -e "\n${WHITE}${method}${SET}\n"
 echo -e "协议:"
-select protocol in ${protocols[@]}; do
+select protocol in ${protocols_array[@]}; do
   if [ $protocol ]; then
     break
   fi
 done
 echo -e "\n${WHITE}${protocol}${SET}\n"
 echo -e "混淆方式:"
-select obfs in ${obfs[@]}; do
+select obfs in ${obfs_array[@]}; do
   if [ $obfs ]; then
     break
   fi
@@ -451,7 +451,6 @@ cat <<-EOF
     
     Please visit: http://github.com/yiguihai and contact.
 EOF
-exit $1
 )
 
 edit_ini()
@@ -515,11 +514,11 @@ while getopts "a:b" opt; do
       ;;
     b)
       edit_ini $OPTARG
-      break
+      exit $?
       ;;
     \?)
       usage
-      kill $$
+      exit $?
       ;;
   esac
 done
