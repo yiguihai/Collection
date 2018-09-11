@@ -530,7 +530,6 @@ if [ ! -x $dir/ssr-local ]; then
   :
 fi
 echo -e "服务器 ${LIGHTPURPLE}$server${SET} 远程端口 ${LIGHTPURPLE}$server_port${SET} 加密方法 ${LIGHTPURPLE}$method${SET} 协议 ${LIGHTPURPLE}$protocol${SET} 协议参数 ${LIGHTPURPLE}$protocol_param${SET} 混淆方式 ${LIGHTPURPLE}$obfs${SET}\n"
-#asp.cntv.myalicdn.com
 until [ "$host" ]; do
   host=($(termux-dialog -t "请输入需要测试的Host(多个用空格隔开)"|jq -r '.["text"]'|egrep -o '(\w+\.\w+)+'))
 done
