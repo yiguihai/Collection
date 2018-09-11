@@ -358,7 +358,7 @@ local response=$(curl -x socks5://127.0.0.1:1088 -sL http://ip.cn)
 if [[ "${response}" = *"来自"* ]]; then
   echo -e "${response/当前 /服务器}"
 else
-  echo -e "${RED}连接服务器失败，请检查脚本配置的服务器是否正确！${SET}"
+  echo -e "${RED}连接到服务器失败！请检查脚本配置的服务器是否正确可用。${SET}"
   EXIT
 fi
 )
@@ -530,7 +530,10 @@ if [ ! -x $dir/ssr-local ]; then
   :
 fi
 echo -e "服务器 ${LIGHTPURPLE}$server${SET} 远程端口 ${LIGHTPURPLE}$server_port${SET} 加密方法 ${LIGHTPURPLE}$method${SET} 协议 ${LIGHTPURPLE}$protocol${SET} 协议参数 ${LIGHTPURPLE}$protocol_param${SET} 混淆方式 ${LIGHTPURPLE}$obfs${SET}\n"
-host=($(termux-dialog -t "请输入需要测试的Host(多个用空格隔开)"|jq -r '.["text"]'))
+#asp.cntv.myalicdn.com
+until [ "$host" ]; do
+  host=($(termux-dialog -t "请输入需要测试的Host(多个用空格隔开)"|jq -r '.["text"]'|egrep -o '(\w+\.\w+)+'))
+done
 x=${#host[@]}
 for i in ${host[@]}; do
   ((x--))
