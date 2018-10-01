@@ -18,6 +18,9 @@ logout
 
 mkdir /data/data/com.termux/files/home/tmp
 
+#查找替换
+#find /data/data/com.termux/files/home/openvpn/ -name "Makefile" -type f -exec sed -i 's/-llzo2/-l:liblzo2.a/g' {} +
+
 cd 
 
 #mbedtls
@@ -71,6 +74,7 @@ cd
 wget https://ftp.pcre.org/pub/pcre/pcre-8.42.zip
 unzip pcre-8.42.zip
 cd pcre-8.42
+autoreconf -f -i -v
 #cd cmake
 #cmake -DCMAKE_INSTALL_PREFIX:PATH=/data/data/com.termux/files/home/tmp ..
 ./configure --prefix=/data/data/com.termux/files/home/tmp
@@ -92,3 +96,13 @@ git submodule update --init --recursive
 make -j4
 make install
 make clean
+
+
+
+#openssl
+wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
+tar zxvf openssl-1.1.1.tar.gz
+cd openssl-1.1.1
+./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
+make -j4
+make install_sw
