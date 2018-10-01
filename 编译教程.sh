@@ -18,9 +18,6 @@ logout
 
 mkdir /data/data/com.termux/files/home/tmp
 
-#查找替换
-#find /data/data/com.termux/files/home/openvpn/ -name "Makefile" -type f -exec sed -i 's/-llzo2/-l:liblzo2.a/g' {} +
-
 cd 
 
 #mbedtls
@@ -84,25 +81,28 @@ make clean
 
 cd
 
+#openssl
+wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
+tar zxvf openssl-1.1.1.tar.gz
+rm -rf openssl-1.1.1.tar.gz
+cd openssl-1.1.1
+./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
+make -j4
+make install_sw
+
+cd
+
 #shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
 git submodule update --init --recursive
 ./autogen.sh
-./configure --disable-documentation --disable-ssp --with-pcre=/data/data/com.termux/files/home/tmp --with-mbedtls=/data/data/com.termux/files/home/tmp --with-sodium=/data/data/com.termux/files/home/tmp --with-cares=/data/data/com.termux/files/home/tmp --with-ev=/data/data/com.termux/files/home/tmp LIBS="-llog" --enable-static=yes --program-prefix=/system
+./configure --disable-documentation --disable-assert --with-pcre=/data/data/com.termux/files/home/tmp --with-mbedtls=/data/data/com.termux/files/home/tmp --with-sodium=/data/data/com.termux/files/home/tmp --with-cares=/data/data/com.termux/files/home/tmp --with-ev=/data/data/com.termux/files/home/tmp LIBS="-llog" --program-prefix=/system
 
-#-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a
-
+#查找替换
+find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
+find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
+find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
 make -j4
 make install
 make clean
-
-
-
-#openssl
-wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
-tar zxvf openssl-1.1.1.tar.gz
-cd openssl-1.1.1
-./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
-make -j4
-make install_sw
