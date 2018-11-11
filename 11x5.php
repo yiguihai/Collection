@@ -26,8 +26,8 @@ tr:nth-child(even) {
 <?php 
 echo <<<EOF
 <form action="" method="POST" autocomplete="on">
-投入金额: <input type="number" name="Money" required><br>
-投注次数: <input type="number" name="Quantity" required><br>
+投注金额: <input type="number" name="Money" required><br>
+下注次数: <input type="number" name="Quantity" required><br>
 <input type="submit" value="计算">
 </form>
 
@@ -68,8 +68,7 @@ foreach ($money as $value)
   $x=$x+1;
   echo "<tr><td>$x</td><td>$value</td></tr>";
 }
-echo "<tr><th>预备金额</th><td>".end($money)."</td></tr></table>";
-//echo "<tr><th>总金额</th><td>".array_sum($money)."</td></tr></table>";
+echo "<tr><th>预备金总额</th><td>".array_sum($money)."</td></tr></table>";
 
 }
 ?>
