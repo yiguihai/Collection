@@ -25,7 +25,7 @@ tr:nth-child(even) {
 <body>
 <?php 
 echo <<<EOF
-<form action="" method="POST" autocomplete="on">
+<form action="" method="GET" autocomplete="on">
 投注金额: <input type="number" name="Money" required><br>
 下注次数: <input type="number" name="Quantity" required><br>
 <input type="submit" value="计算">
@@ -33,11 +33,12 @@ echo <<<EOF
 
 <!--<p>点击"提交"按钮，表单数据将被发送到服务器上的“demo-form.php”。</p>-->
 EOF;
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-$x=0;
-$coin = $_POST['Money'];
-$max = $_POST['Quantity'];
 
+$x=0;
+$coin = $_GET['Money'];
+$max = $_GET['Quantity'];
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $coin && $max) {
 for($i = 0; $i < $max; $i++) {
   switch ($i):
     case 0:
