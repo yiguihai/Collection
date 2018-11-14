@@ -30,8 +30,6 @@ echo <<<EOF
 下注次数: <input type="number" name="Quantity" required><br>
 <input type="submit" value="计算">
 </form>
-
-<!--<p>点击"提交"按钮，表单数据将被发送到服务器上的“demo-form.php”。</p>-->
 EOF;
 
 $x=0;
@@ -39,21 +37,21 @@ $coin = $_GET['Money'];
 $max = $_GET['Quantity'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $coin && $max) {
-for($i = 0; $i < $max; $i++) {
-  switch ($i):
-    case 0:
-        $money[]=$coin;
-        break;
-    case 1:
-        $money[]=$coin*2;
-        break;
-    case 2:
-        $money[]=$coin*3;
-        break;
-    default:
-        $money[]=end($money)*2;
-  endswitch;
-}
+  for($i = 0; $i < $max; $i++) {
+    switch ($i):
+      case 0:
+          $money[]=$coin;
+          break;
+      case 1:
+          $money[]=$coin*2;
+          break;
+      case 2:
+          $money[]=$coin*4;
+          break;
+      default:
+          $money[]=end($money)*2;
+    endswitch;
+  }
 
 echo <<<EOF
 <table>
@@ -64,13 +62,11 @@ echo <<<EOF
   </tr>
 EOF;
 
-foreach ($money as $value)
-{
-  $x=$x+1;
-  echo "<tr><td>$x</td><td>$value</td></tr>";
-}
-echo "<tr><th>预备金总额</th><td>".array_sum($money)."</td></tr></table>";
-
+  foreach ($money as $value) {
+    $x=$x+1;
+    echo "<tr><td>$x</td><td>$value</td></tr>";
+  }
+  echo "<tr><th>预备金总额</th><td>".array_sum($money)."</td></tr></table>";
 }
 ?>
 </body>
