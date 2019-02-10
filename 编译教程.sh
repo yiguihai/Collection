@@ -105,7 +105,8 @@ find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type 
 find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
 find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
 make -j4
-find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs arm-linux-androideabi-strip
+find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs aarch64-linux-android-strip
+#find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs arm-linux-androideabi-strip
 find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
 make install
 make clean
