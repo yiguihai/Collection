@@ -43,10 +43,10 @@ make clean
 cd 
 
 #libev
-wget http://dist.schmorp.de/libev/libev-4.24.tar.gz
-tar zxvf libev-4.24.tar.gz
-rm -rf libev-4.24.tar.gz
-cd libev-4.24
+wget http://dist.schmorp.de/libev/libev-4.25.tar.gz
+tar zxvf libev-4.25.tar.gz
+rm -rf libev-4.25.tar.gz
+cd libev-4.25
 chmod +x autogen.sh
 ./autogen.sh
 ./configure --prefix=/data/data/com.termux/files/home/tmp
@@ -86,7 +86,8 @@ wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
 tar zxvf openssl-1.1.1.tar.gz
 rm -rf openssl-1.1.1.tar.gz
 cd openssl-1.1.1
-./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
+#./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
+./config --prefix=/data/data/com.termux/files/home/tmp -llog
 make -j4
 make install_sw
 
