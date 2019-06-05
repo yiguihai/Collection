@@ -21,22 +21,22 @@ while IFS= read -r line; do
   domain=$(echo $(echo ${line//\(\^\|\\\.\)/}|sed -e 's/\\././g')|sed -e 's/\$//g')
   if [ "$(echo ${line}|grep -E '^(\[|\#|([0-9]{1,3}\.){3}[0-9]{1,3})')" ]; then
     echo ${line} >> $(pwd)/test.acl
-  fi
-  url=$(echo ${domain}|grep -E '^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
-  if [ "${url}" ]; then
-    ((x++))
-    code=$(curl -x socks5://127.0.0.1:1080 -m 5 -s -o /dev/null -w "%{http_code}" "${url}")
-     if [ $? -eq 0 ]; then
-      ((w++))
-      echo -e "${white}$url${plain} ${green}响应成功! $code ${plain} ${lightred}$x${plain} "
-      echo ${line} >> $(pwd)/test.acl
-    else
-      ((e++))
-      echo -e "${yellow}$url${plain} ${red}连接失败! $code ${plain} ${lightred}$x${plain} "
-      echo ${line} >> $(pwd)/fail.acl
+  else
+    if [ "${domain}" ]; then
+      ((x++))
+      code=$(curl -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 -m 4 -s -o /dev/null -w "%{http_code}" "${domain}")
+      if [[ $? -eq 0 && "${code}" -lt 400 ]]; then
+        ((w++))
+        echo -e "${white}${domain}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
+        echo ${line} >> $(pwd)/test.acl
+      else
+        ((e++))
+        echo -e "${yellow}${domain}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
+        echo ${line} >> $(pwd)/fail.acl
+      fi
     fi
   fi
-  unset -v domain url code
+  unset -v domain code
 done < $(pwd)/gfwlist.acl
 end_time=$(date +%s)
 time_distance=$(($end_time - $begin_time));
