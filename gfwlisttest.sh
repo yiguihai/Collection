@@ -2,8 +2,6 @@
 
 export HISTCONTROL=ignorespace
 export HISTSIZE=0
-history -cw
-clear
 
 begin_time=$(date +%s)
 white='\033[1;37m'
@@ -43,14 +41,14 @@ while IFS= read -r line; do
   fi
   unset -v domain code
 done < $(pwd)/gfwlist.acl
+history -cw
+clear
 end_time=$(date +%s)
 time_distance=$(($end_time - $begin_time));
 hour_distance=$(expr ${time_distance} / 3600)  
 hour_remainder=$(expr ${time_distance} % 3600)  
 min_distance=$(expr ${hour_remainder} / 60)  
 min_remainder=$(expr ${hour_remainder} % 60)
-history -cw
-clear
 echo -e "测试结果文件: ${lightred}$(pwd)/test.acl${plain}";
 echo -e "测试完成！[总数: ${lightred}${x}${plain}] 共 ${green}${w}${plain} 个响应成功。共 ${red}${e}${plain} 个响应失败。耗时 ${white}${hour_distance}:${min_distance}:${min_remainder}${plain}";
 
