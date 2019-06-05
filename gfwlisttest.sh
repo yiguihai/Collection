@@ -5419,13 +5419,14 @@ zzcartoon.com
 zzcloud.me
 zzux.com
 )
-$(pwd)/test.log
+rm -f $(pwd)/test.log
+touch $(pwd)/test.log
 echo -e "本次测试数量: ${lightred}${#gfwlist[@]}${plain}";
 x=0
 e=0
 for i in ${gfwlist[@]}; do
 ((x++))
-code=$(curl -m 5 -s -o /dev/null -w "%{http_code}" "${i}")
+code=$(curl -x socks5://127.0.0.1:1080 -m 5 -s -o /dev/null -w "%{http_code}" "${i}")
 if [ $? -eq 0 ]; then
   echo -e "${white}$i${plain} ${green}响应成功! $code ${plain} ${lightred}$x${plain} "
 else
