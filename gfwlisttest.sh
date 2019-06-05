@@ -13,6 +13,7 @@ plain='\033[0m'
 rm -f $(pwd)/test.acl
 touch $(pwd)/test.acl
 x=0
+w=0
 e=0
 while IFS= read -r line; do
   domain=$(echo $(echo ${line//\(\^\|\\\.\)/}|sed -e 's/\\././g')|sed -e 's/\$//g')
@@ -21,9 +22,10 @@ while IFS= read -r line; do
   fi
   url=$(echo ${domain}|grep -E '^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
   if [ "${url}" ]; then
+    ((x++))
     code=$(curl -x socks5://127.0.0.1:1080 -m 5 -s -o /dev/null -w "%{http_code}" "${url}")
      if [ $? -eq 0 ]; then
-      ((x++))
+      ((w++))
       echo -e "${white}$url${plain} ${green}响应成功! $code ${plain} ${lightred}$x${plain} "
       echo ${line} >> $(pwd)/test.acl
     else
@@ -40,6 +42,6 @@ hour_remainder=$(expr ${time_distance} % 3600)
 min_distance=$(expr ${hour_remainder} / 60)  
 min_remainder=$(expr ${hour_remainder} % 60)
 echo -e "测试结果文件: ${lightred}$(pwd)/test.acl${plain}";
-echo -e "测试完成！共 ${lightred}${x}${plain} 个响应成功。共 ${lightred}${e}${plain} 个响应失败。耗时 ${hour_distance}:${min_distance}:${min_remainder}";
+echo -e "测试完成！[总数: ${lightred}${x}${plain}] 共 ${green}${w}${plain} 个响应成功。共 ${red}${e}${plain} 个响应失败。耗时 ${white}${hour_distance}:${min_distance}:${min_remainder}${plain}";
 
 
