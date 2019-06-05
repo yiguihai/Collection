@@ -24,7 +24,7 @@ while IFS= read -r line; do
   else
     if [ "${domain}" ]; then
       ((x++))
-      code=$(curl -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 -m 4 -s -o /dev/null -w "%{http_code}" "${domain}")
+      code=$(curl -L -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 -m 4 -s -o /dev/null -w "%{http_code}" "${domain}")
       if [[ $? -eq 0 && "${code}" -lt 400 ]]; then
         ((w++))
         echo -e "${white}${domain}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
