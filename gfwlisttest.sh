@@ -20,15 +20,17 @@ while IFS= read -r line; do
     echo ${line} >> $(pwd)/test.acl
   fi
   url=$(echo ${domain}|grep -E '^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$')
-  code=$(curl -x socks5://127.0.0.1:1080 -m 5 -s -o /dev/null -w "%{http_code}" "${url}")
-  if [ $? -eq 0 ]; then
-    ((x++))
-    echo -e "${white}$url${plain} ${green}响应成功! $code ${plain} ${lightred}$x${plain} "
-    echo ${line} >> $(pwd)/test.acl
-  else
-    ((e++))
-    echo -e "${yellow}$url${plain} ${red}连接失败! $code ${plain} ${lightred}$x${plain} "
-  fi 
+  if [ "${url}" ]; then
+    code=$(curl -x socks5://127.0.0.1:1080 -m 5 -s -o /dev/null -w "%{http_code}" "${url}")
+     if [ $? -eq 0 ]; then
+      ((x++))
+      echo -e "${white}$url${plain} ${green}响应成功! $code ${plain} ${lightred}$x${plain} "
+      echo ${line} >> $(pwd)/test.acl
+    else
+      ((e++))
+      echo -e "${yellow}$url${plain} ${red}连接失败! $code ${plain} ${lightred}$x${plain} "
+    fi
+  fi
   unset -v domain url code
 done < $(pwd)/gfwlist.acl
 end_time=$(date +%s)
