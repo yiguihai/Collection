@@ -12,6 +12,8 @@ plain='\033[0m'
 
 rm -f $(pwd)/test.acl
 touch $(pwd)/test.acl
+rm -f $(pwd)/fail.acl
+touch $(pwd)/fail.acl
 x=0
 w=0
 e=0
@@ -31,6 +33,7 @@ while IFS= read -r line; do
     else
       ((e++))
       echo -e "${yellow}$url${plain} ${red}连接失败! $code ${plain} ${lightred}$x${plain} "
+      echo ${line} >> $(pwd)/fail.acl
     fi
   fi
   unset -v domain url code
