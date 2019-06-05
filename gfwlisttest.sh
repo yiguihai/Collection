@@ -30,14 +30,14 @@ while IFS= read -r line; do
     echo -e "${yellow}$url${plain} ${red}连接失败! $code ${plain} ${lightred}$x${plain} "
   fi 
   unset -v domain url code
-done < $(wget -qO- -t3 -T60 https://github.com/shadowsocks/shadowsocks-android/raw/master/core/src/main/assets/acl/gfwlist.acl)
+done < $(pwd)/gfwlist.acl
 end_time=$(date +%s)
 time_distance=$(($end_time - $begin_time));
 hour_distance=$(expr ${time_distance} / 3600)  
 hour_remainder=$(expr ${time_distance} % 3600)  
 min_distance=$(expr ${hour_remainder} / 60)  
 min_remainder=$(expr ${hour_remainder} % 60)
-echo -e "测试结果文件: ${lightred}$(pwd)/test.acl{${plain}";
+echo -e "测试结果文件: ${lightred}$(pwd)/test.acl${plain}";
 echo -e "测试完成！共 ${lightred}${x}${plain} 个响应成功。共 ${lightred}${e}${plain} 个响应失败。耗时 ${hour_distance}:${min_distance}:${min_remainder}";
 
 
