@@ -13,24 +13,25 @@ magenta='\033[0;95m'
 cyan='\033[0;96m'
 plain='\033[0m'
 
-rm -f $(pwd)/test.acl
-touch $(pwd)/test.acl
 rm -f $(pwd)/fail.acl
 touch $(pwd)/fail.acl
 x=0
-alias aaa='code=$(curl -L -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 -m 15 -s -o /dev/null -w "%{http_code}" "${domain}")
-      if $2 ; then
-        local m=15
-      else
-        local m=5
-      fi
-      if [[ "${code}" -ge 200 && "${code}" -le 308 ]]; then
-        echo -e "${white}${domain}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
-        echo ${1} >> $(pwd)/test.acl
-      else
-        echo -e "${yellow}${domain}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
-        echo ${1} >> $(pwd)/fail.acl
-      fi'
+url_test()(
+    if $3 ; then
+      m=10
+    else
+      m=5
+    fi
+    code=$(curl -L -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 -m ${m} -s -o /dev/null -w "%{http_code}" "${1}")
+    if [[ "${code}" -ge 200 && "${code}" -le 308 ]]; then
+      echo -e "${white}${1}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
+    else
+      if [ -z "$(echo ${1}|grep -E '^(\s|\[|\#|([0-9]{1,3}\.){3}[0-9]{1,3})')" ]; then
+       echo -e "${yellow}${1}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
+       echo ${2} >> $(pwd)/fail.acl
+      fi      
+    fi
+)
 check(){ 
   local domain=$(echo $(echo ${1//\(\^\|\\\.\)/}|sed -e 's/\\././g')|sed -e 's/\$//g')
   #if [ "$(echo ${1}|grep -E '^(\s|\[|\#|([0-9]{1,3}\.){3}[0-9]{1,3})')" ]; then
@@ -39,25 +40,35 @@ check(){
     if [ "${domain}" ]; then
       ((x++))
       if $2 ; then
-        (aaa)&
+        (url_test "${domain}" "${1}" ${2})&
       else
-        aaa
+        url_test "${domain}" "${1}" ${2}
       fi
     fi
   #fi
 }
 while IFS= read -r line; do
   check "${line}" true
-  sleep 2
+  sleep 1
 done < $(pwd)/gfwlist.acl
 wait
+#第二次测试
 while IFS= read -r line; do
   check "${line}" false
 done < $(pwd)/fail.acl
+
+sort -u $(pwd)/fail.acl -o $(pwd)/fail.acl #重新整理
+
+while IFS= read -r line; do
+  while IFS= read -r lines; do
+    if [[ "${line}" == "${lines}" ]]; then
+      sed -i "/${lines}/d" $(pwd)/gfwlist.acl
+    fi
+  done < $(pwd)/fail.acl
+done < $(pwd)/gfwlist.acl
+sed -i '/^$/d' $(pwd)/gfwlist.acl #删除空行
 history -cw
 clear
-sort -u $(pwd)/test.acl -o $(pwd)/test.acl
-sort -u $(pwd)/fail.acl -o $(pwd)/fail.acl
 end_time=$(date +%s)
 time_distance=$(($end_time - $begin_time));
 hour_distance=$(expr ${time_distance} / 3600)  
