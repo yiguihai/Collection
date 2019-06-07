@@ -13,38 +13,25 @@ magenta='\033[0;95m'
 cyan='\033[0;96m'
 plain='\033[0m'
 
-url_test()(
-    if $3 ; then
-      t=20
-      m=60
-      r="--retry 3"      
-    else
-      t=3
-      m=5
-    fi
-    code=$(curl -L ${r} -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 --connect-timeout ${t} -m ${m} -s -o /dev/null -w "%{http_code}" "${1}")
-    if [[ "${code}" -ge 200 ]]; then
-      echo -e "${white}${1}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
-    else
-      if [ -z "$(echo ${1}|grep -E '^(\s|\[|\#|([0-9]{1,3}\.){3}[0-9]{1,3})')" ]; then
-       echo -e "${yellow}${1}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
-       echo ${2} >> $(pwd)/fail.acl
-      fi      
-    fi
-    if [ ${x} -lt 0 ]; then
-      break
-    fi
-)
-
-check(){ 
+check(){    
   local domain=$(echo $(echo ${1//\(\^\|\\\.\)/}|sed -e 's/\\././g')|sed -e 's/\$//g')
   if [ "${domain}" ]; then
     ((x--))
-    if $2 ; then
-      (url_test "${domain}" "${1}" ${2})&
+    (
+    code=$(curl -L --retry 3 -A "MAUI WAP Browser" -x socks5://127.0.0.1:1080 --connect-timeout 20 -m 60 -s -o /dev/null -w "%{http_code}" "${domain}")
+    if [[ "${code}" -ge 200 ]]; then
+      echo -e "${white}${domain}${plain} ${green}响应成功! $code ${plain} ${lightred}${x}${plain} "
     else
-      url_test "${domain}" "${1}" ${2}
+      if [ -z "$(echo ${domain}|grep -E '^(\s|\[|\#|([0-9]{1,3}\.){3}[0-9]{1,3})')" ]; then
+       echo -e "${yellow}${domain}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
+       if $2 ; then
+         echo ${1} >> $(pwd)/fail.acl
+       else
+         echo ${1} >> $(pwd)/fail2.acl
+       fi
+      fi      
     fi
+    )&
   fi
 }
 
@@ -63,7 +50,7 @@ _time()(
   hour_remainder=$(expr ${time_distance} % 3600)  
   min_distance=$(expr ${hour_remainder} / 60)  
   min_remainder=$(expr ${hour_remainder} % 60)
-  echo -e "执行耗时: [${white}${hour_distance}:${min_distance}:${min_remainder}${plain}]";
+  echo -e "[${yellow}提示${plain}] 执行耗时: ${white}${hour_distance}:${min_distance}:${min_remainder}${plain}";
 )
 
 _test(){
@@ -74,20 +61,26 @@ while IFS= read -r line; do
   check "${line}" true
   sleep 0.1
 done < $(pwd)/gfwlist.acl
+wait
 _time
 }
 
 _check(){
+rm -f $(pwd)/fail2.acl
+touch $(pwd)/fail2.acl
 x=$(_quantity "$(pwd)/fail.acl")
 while IFS= read -r line; do
   check "${line}" false
 done < $(pwd)/fail.acl
-sort -u $(pwd)/fail.acl -o $(pwd)/fail.acl #重新整理
+wait
+mv -f $(pwd)/fail2.acl $(pwd)/fail.acl
+#sort -u $(pwd)/fail.acl -o $(pwd)/fail.acl #重新整理
 _time
 }
 
 _write(){
 x=0
+echo -e "[${yellow}提示${plain}] 正在对比整理文件…"
 while IFS= read -r line; do
   ((x++))
   while IFS= read -r lines; do
