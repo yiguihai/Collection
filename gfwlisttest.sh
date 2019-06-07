@@ -79,7 +79,7 @@ _time
 }
 
 _write(){
-x=0
+x=1
 while IFS= read -r line; do
   ((x++))
   while IFS= read -r lines; do
