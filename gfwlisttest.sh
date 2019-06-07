@@ -80,11 +80,11 @@ _time
 
 _write(){
 x=0
-echo -e "[${yellow}提示${plain}] 正在对比整理文件…"
 while IFS= read -r line; do
   ((x++))
   while IFS= read -r lines; do
     if [[ "${line}" == "${lines}" ]]; then
+      echo -e "[${yellow}提示${plain}] 正在删除第 ${x} 行 ${lines}"
       sed -i "${x}d" $(pwd)/gfwlist.acl
     fi
   done < $(pwd)/fail.acl
