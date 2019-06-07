@@ -15,9 +15,9 @@ plain='\033[0m'
 
 url_test()(
     if $3 ; then
-      t=10
-      m=20
-      r="--retry 2"      
+      t=20
+      m=60
+      r="--retry 3"      
     else
       t=3
       m=5
@@ -30,6 +30,9 @@ url_test()(
        echo -e "${yellow}${1}${plain} ${red}连接失败! $code ${plain} ${lightred}${x}${plain} "
        echo ${2} >> $(pwd)/fail.acl
       fi      
+    fi
+    if [ ${x} -lt 0 ]; then
+      break
     fi
 )
 
