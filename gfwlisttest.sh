@@ -79,17 +79,19 @@ _time
 }
 
 _write(){
-x=1
+
 while IFS= read -r line; do
-  ((x++))
+  x=0  
   while IFS= read -r lines; do
+    ((x++))
     if [[ "${line}" == "${lines}" ]]; then
       echo -e "[${yellow}提示${plain}] 正在删除第 ${x} 行 ${lines}"
       sed -i "${x}d" $(pwd)/gfwlist.acl
     fi
-  done < $(pwd)/fail.acl
-done < $(pwd)/gfwlist.acl
-sed -i '/^$/d' $(pwd)/gfwlist.acl #删除空行
+  done < $(pwd)/gfwlist.acl
+  wait
+done < $(pwd)/fail.acl
+#sed -i '/^$/d' $(pwd)/gfwlist.acl #删除空行
 _time
 }
 
