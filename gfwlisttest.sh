@@ -59,7 +59,6 @@ touch $(pwd)/fail.acl
 x=$(_quantity "$(pwd)/gfwlist.acl")
 while IFS= read -r line; do
   check "${line}" true
-  sleep 0.1
 done < $(pwd)/gfwlist.acl
 wait
 _time
