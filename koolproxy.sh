@@ -47,12 +47,12 @@ ss_nat()
   iptables -t nat -A nat_out -j koolproxy
   iptables -t nat -A OUTPUT -j nat_out
   read -p "需要过滤https流量吗？ [y/n] " opt
-  if [[ "$opt" = 'Y' && "$opt" = 'y' ]]; then
+  if [[ "$opt" = 'Y' || "$opt" = 'y' ]]; then
     port='80,443,8080'
     echo_date 已打开https过滤
   else
     port='80,8080'
-    echo_date 未过滤https
+    echo_date 未过滤https流量
   fi
   iptables -t nat -A koolproxy -p tcp -m multiport --dport $port -j REDIRECT --to-ports 3000
 );
@@ -139,12 +139,14 @@ update_rule()(
 
 gen_ca()(
   echo_date "#####证书生成#####"
-  if [ ! -f data/openssl.cnf ]; then
+  if [ ! -s data/openssl.cnf ]; then
     echo_date 没有找到openssl.cnf
+    koolproxy --cert
+    echo_date 使用自带证书生成
     exit $?
   fi
 
-  if [ -f data/private/ca.key.pem ]; then
+  if [ -s data/private/ca.key.pem ]; then
     echo_date 已经有证书了！
     read -p "需要重新生成证书吗? [y/n] " opt    
   else
