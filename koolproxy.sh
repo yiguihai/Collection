@@ -171,8 +171,8 @@ gen_ca()(
 
       #step 2, domain rsa key
       openssl genrsa -aes256 -passout pass:koolshare -out data/private/base.key.pem 2048
-      echo_date 证书生成完毕...
       echo_date https过滤模式下访问 110.110.110.110 下载导入证书
+      echo_date 证书生成完毕...      
     ;;
     *)
       echo_date 取消证书生成...
