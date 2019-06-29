@@ -46,11 +46,13 @@ ss_nat()
   iptables -t nat -A nat_out -m owner --uid-owner $(id -u) -j ACCEPT
   iptables -t nat -A nat_out -j koolproxy
   iptables -t nat -A OUTPUT -j nat_out
-  read -p "需要拦截https流量吗？ [y/n] " opt
+  read -p "需要过滤https流量吗？ [y/n] " opt
   if [[ "$opt" = 'Y' && "$opt" = 'y' ]]; then
     port='80,443,8080'
+    echo_date 已打开https过滤
   else
     port='80,8080'
+    echo_date 未过滤https
   fi
   iptables -t nat -A koolproxy -p tcp -m multiport --dport $port -j REDIRECT --to-ports 3000
 );
@@ -59,8 +61,7 @@ download_file()(
   filename=$(basename $1)
   wget --no-check-certificate -q -c -t3 -T30 -O $1 $2
   if [ $? -ne 0 ]; then
-    echo -e "[${red}Error${plain}] Download ${filename} failed."
-    echo_date 下载文件 ${filename} 失败，请检查网络！
+    echo_date 下载文件 ${filename} 时失败，请检查网络！
     exit $?
   fi
 );
@@ -93,48 +94,41 @@ _stop()(
 );
 
 update_kpr()(
-  echo_date 检查版本更新中请耐心等待.....
+  echo_date "#####检查版本有无更新#####"
   download_file koolproxy_now $url_path/koolproxy
   koolproxyR_now_md5=`md5sum koolproxy|awk '{print $1}'`
   koolproxyR_download_md5=`md5sum koolproxy_now|awk '{print $1}'`
-  if [[ "$koolproxyR_now_md5" != "$koolproxyR_download_md5" ]]; then     
-    echo_date 检查到与线上版本不一致，开始更新.....
-    echo_date 移动更新文件
+  if [[ "$koolproxyR_now_md5" != "$koolproxyR_download_md5" ]]; then
     mv -f koolproxy_now koolproxy
-    echo_date 添加文件执行权限
     chmod +x koolproxy
+    echo_date KoolProxy已更新
   else
     echo_date KoolProxy并没有更新
   fi
   for i in source.list openssl.cnf
   do
     if [ ! -s data/$i ]; then
-      echo_date 正在下载 $i 文件
+      echo_date 正在下载 $i 缺失文件
       download_file data/$i $url_path/data/$i
     fi
   done
-  echo_date 配置source.list文件中
-  sed -i "s/1|/0|/g" data/source.list  
   for i in ${new_list[@]} user.txt
   do
-    sed -i "s/0|$i/1|$i/g" data/source.list
+    sed -i "s/1|$i/0|$i/g" data/source.list
   done
 );
 
 update_rule()(  
-  echo_date 检查规则更新中请耐心等待.....
-  if [ ! -d data/rules ]; then
-    echo_date 正在创建rules文件夹.....
-    mkdir data/rules
-  fi
+  echo_date "#####检查规则文件有无更新#####"
   if [ ! -s data/rules/user.txt ]; then
     rules_list=(${rules_list[*]} user.txt);
   fi
   
   for i in ${rules_list[@]}
   do
+    echo_date 正在检查 $i 规则文件
     if [[ "$(md5sum data/rules/$i|awk '{print $1}')" != "$(wget -qO- -t3 -T15 $url_path/data/rules/$i.md5)" ]]; then
-      echo_date 更新 $i 规则文件中…
+      echo_date 正在下载 $i 更新文件
       download_file data/rules/$i $url_path/data/rules/$i
     else
       echo_date $i 无需更新
@@ -143,6 +137,7 @@ update_rule()(
 );
 
 gen_ca()(
+  echo_date "#####证书生成#####"
   if [ ! -f data/openssl.cnf ]; then
     echo_date 没有找到openssl.cnf
     exit $?
@@ -187,13 +182,15 @@ history -cw
 clear
 
 
-while true; do  
-  if [ ! -d data ]; then
-    echo_date 正在创建data文件夹.....
-    mkdir data
-  fi
+while true; do      
+  for i in data data/rules
+  do
+    if [ ! -d $i ]; then
+      mkdir $i
+    fi
+  done
   if [ ! -x koolproxy ]; then
-    echo_date 安装KoolProxy中...
+    echo_date "#####首次安装KoolProxy#####"
     update_kpr
     update_rule
   fi
