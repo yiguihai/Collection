@@ -104,6 +104,7 @@ update_kpr()(
     echo_date KoolProxy已更新
   else
     echo_date KoolProxy并没有更新
+    rm -rf koolproxy_now
   fi
   for i in source.list openssl.cnf
   do
@@ -112,9 +113,9 @@ update_kpr()(
       download_file data/$i $url_path/data/$i
     fi
   done
-  for i in ${new_list[@]} user.txt
+  for i in ${rules_list[@]} user.txt
   do
-    sed -i "s/1|$i/0|$i/g" data/source.list
+    sed -i "s/0|$i/1|$i/g" data/source.list
   done
 );
 
@@ -178,9 +179,32 @@ gen_ca()(
   esac
 );
 
+_debug()(
+  _stop
+  ss_nat
+  cat >watch.sh<<-EOF
+echo \$$ >watch.pid
+while true; do
+  if [ ! -d /proc/$$ ]; then
+    $0 stop
+    rm -rf watch.sh watch.pid
+    exit $?
+  fi
+  sleep 2
+done
+EOF
+  chmod +x watch.sh
+  setsid ./watch.sh &
+  koolproxy -l 0
+);
+
+if [[ "$1" == "stop" ]]; then
+  _stop
+  exit $?
+fi
+
 history -cw
 clear
-
 
 while true; do      
   for i in data data/rules
@@ -194,8 +218,8 @@ while true; do
     update_kpr
     update_rule
   fi
-  menu_list=(开始 运行状态 停止 调试输出 生成证书 检查更新)
-  echo "KoolProxyR $(koolproxy -v)"
+  menu_list=(开始 运行状态 停止 调试模式 生成证书 检查更新)
+  echo "KoolProxy $(koolproxy -v)"
   select action in ${menu_list[@]}; do  
     case $action in
       开始)
@@ -208,10 +232,8 @@ while true; do
       停止)
           _stop
           ;;
-      调试输出)
-          _stop
-          ss_nat
-         koolproxy -l 0
+      调试模式)
+          _debug
           ;;
       生成证书)
           gen_ca
