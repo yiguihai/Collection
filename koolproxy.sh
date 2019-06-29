@@ -113,10 +113,9 @@ update_kpr()(
       download_file data/$i $url_path/data/$i
     fi
   done
-  new_list=(${rules_list[*]} user.txt);
   echo_date 配置source.list文件中
   sed -i "s/1|/0|/g" data/source.list  
-  for i in ${new_list[@]}
+  for i in ${new_list[@]} user.txt
   do
     sed -i "s/0|$i/1|$i/g" data/source.list
   done
@@ -128,6 +127,10 @@ update_rule()(
     echo_date 正在创建rules文件夹.....
     mkdir data/rules
   fi
+  if [ ! -s data/rules/user.txt ]; then
+    rules_list=(${rules_list[*]} user.txt);
+  fi
+  
   for i in ${rules_list[@]}
   do
     if [[ "$(md5sum data/rules/$i|awk '{print $1}')" != "$(wget -qO- -t3 -T15 $url_path/data/rules/$i.md5)" ]]; then
@@ -190,7 +193,7 @@ while true; do
     mkdir data
   fi
   if [ ! -x koolproxy ]; then
-    echo_date 安装KoolProxyR中...
+    echo_date 安装KoolProxy中...
     update_kpr
     update_rule
   fi
