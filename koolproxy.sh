@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#https://www.jianshu.com/p/f547b05a5335
+#https://segmentfault.com/a/1190000017035564
+#https://blog.chenjia.me/articles/171029-223953.html
+
 export HISTCONTROL=ignorespace
 export HISTSIZE=0
 export PATH=$PATH:$(pwd)
@@ -139,12 +143,6 @@ update_rule()(
 
 gen_ca()(
   echo_date "#####证书生成#####"
-  if [ ! -s data/openssl.cnf ]; then
-    echo_date 没有找到openssl.cnf
-    koolproxy --cert
-    echo_date 使用自带证书生成
-    exit $?
-  fi
 
   if [ -s data/private/ca.key.pem ]; then
     echo_date 已经有证书了！
@@ -152,31 +150,40 @@ gen_ca()(
   else
     opt='Y'
   fi
+  
 
   case $opt in
     y|Y)
       echo_date 生成证书中...
       rm -rf data/private data/certs
-      #step 1, root ca
-      mkdir -p data/certs data/private
-      rm -f data/serial private/ca.key.pem
-      chmod 700 data/private
-      echo 1000 > data/serial
-      openssl genrsa -aes256 -passout pass:koolshare -out data/private/ca.key.pem 2048
-      chmod 400 data/private/ca.key.pem
-      openssl req -config data/openssl.cnf -passin pass:koolshare \
-      -subj "/C=CN/ST=Beijing/L=KP/O=KoolProxy inc/CN=koolproxy.com" \
-      -key data/private/ca.key.pem \
-      -new -x509 -days 7300 -sha256 -extensions v3_ca \
-      -out data/certs/ca.crt
+      if [ ! -s data/openssl.cnf ]; then
+        echo_date 没有找到openssl.cnf使用自带证书生成
+        koolproxy --cert
+      else
+        #step 1, root ca
+        mkdir -p data/certs data/private
+        rm -f data/serial private/ca.key.pem
+        chmod 700 data/private
+        echo 1000 > data/serial
+        openssl genrsa -aes256 -passout pass:koolshare -out data/private/ca.key.pem 2048
+        chmod 400 data/private/ca.key.pem
+        openssl req -config data/openssl.cnf -passin pass:koolshare \
+        -subj "/C=CN/ST=Beijing/L=KP/O=KoolProxy inc/CN=koolproxy.com" \
+        -key data/private/ca.key.pem \
+        -new -x509 -days 7300 -sha256 -extensions v3_ca \
+        -out data/certs/ca.crt
 
-      #step 2, domain rsa key
-      openssl genrsa -aes256 -passout pass:koolshare -out data/private/base.key.pem 2048
+        #step 2, domain rsa key
+        openssl genrsa -aes256 -passout pass:koolshare -out data/private/base.key.pem 2048
+        
+      fi      
+      echo_date PC安装到【受信任的根证书发布机构】
+      echo_date 安卓7.0以上命名为 $(openssl x509 -inform PEM -subject_hash_old -in data/certs/ca.crt | head -1).0 将根证书复制到【/system/etc/security/cacerts】【/system/etc/security/cacerts_google】
       echo_date https过滤模式下访问 110.110.110.110 下载导入证书
-      echo_date 证书生成完毕...      
+      echo_date 证书生成完毕...
     ;;
     *)
-      echo_date 取消证书生成...
+        echo_date 取消证书生成...
     ;;
   esac
 );
