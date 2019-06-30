@@ -98,7 +98,8 @@ _stop()(
 );
 
 update_kpr()(
-  echo_date "#####检查版本有无更新#####"
+  echo_date "=====检查版本有无更新====="
+  echo_date 正在检查KoolProxy新版本请稍等…
   download_file koolproxy_now $url_path/koolproxy
   koolproxyR_now_md5=`md5sum koolproxy|awk '{print $1}'`
   koolproxyR_download_md5=`md5sum koolproxy_now|awk '{print $1}'`
@@ -124,7 +125,7 @@ update_kpr()(
 );
 
 update_rule()(  
-  echo_date "#####检查规则文件有无更新#####"
+  echo_date "=====检查规则文件有无更新====="
   if [ ! -s data/rules/user.txt ]; then
     rules_list=(${rules_list[*]} user.txt);
   fi
@@ -142,7 +143,7 @@ update_rule()(
 );
 
 gen_ca()(
-  echo_date "#####证书生成#####"
+  echo_date "=====证书生成====="
 
   if [ -s data/private/ca.key.pem ]; then
     echo_date 已经有证书了！
@@ -223,7 +224,7 @@ while true; do
     fi
   done
   if [ ! -x koolproxy ]; then
-    echo_date "#####首次安装KoolProxy#####"
+    echo_date "=====首次安装KoolProxy====="
     update_kpr
     update_rule
   fi
