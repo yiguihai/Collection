@@ -29,7 +29,6 @@ lan_list=(
 );
 
 rules_list=(
-kpr_video_list.txt
 easylistchina.txt
 yhosts.txt
 fanboy-annoyance.txt
