@@ -1,10 +1,5 @@
 #echo | gcc -v -x c++ -E -
 
-
-libsodium_ver="1.0.18"
-libev_ver="4.27"
-libpcre_ver="8.43"
-
 pkg install -y openssh
 cd .ssh
 termux-setup-storage
@@ -23,11 +18,15 @@ logout
 mkdir /data/data/com.termux/files/home/tmp
 mkdir /data/data/com.termux/files/home/ss
 
+libev_ver="4.27"
+libpcre_ver="8.43"
+
 cd 
 
 #mbedtls
-git clone https://github.com/ARMmbed/mbedtls
+git clone --recursive https://github.com/ARMmbed/mbedtls.git
 cd mbedtls
+git submodule update --init crypto
 make no_test -j
 make install DESTDIR=/data/data/com.termux/files/home/tmp
 make clean
@@ -35,10 +34,8 @@ make clean
 cd 
 
 #libsodium
-wget https://github.com/jedisct1/libsodium/releases/download/${libsodium_ver}-RELEASE/libsodium-${libsodium_ver}.tar.gz
-tar zxvf libsodium-${libsodium_ver}.tar.gz
-rm -rf libsodium-${libsodium_ver}.tar.gz
-cd libsodium-${libsodium_ver}
+git clone https://github.com/jedisct1/libsodium --branch stable
+cd libsodium
 ./autogen.sh
 ./configure --prefix=/data/data/com.termux/files/home/tmp
 make -j
@@ -96,7 +93,7 @@ cd
 #make -j
 #make install_sw
 
-cd
+#cd
 
 #shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
@@ -113,8 +110,7 @@ find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type 
 #修改源码
 
 make -j
-find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs aarch64-linux-android-strip
-#find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs arm-linux-androideabi-strip
+find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
 find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
 make install
 make clean
