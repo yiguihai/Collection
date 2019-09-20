@@ -1,15 +1,11 @@
 #echo | gcc -v -x c++ -E -
 
-apt_depends=(
-build-essential unzip gzip wget curl autoconf automake gcc make git
-)
-yum_depends=(
-gcc gcc-c++ clang autoconf automake pkg-config git wget curl unzip
-)
-apt-get -y update
-for depend in ${apt_depends[@]}; do
-  apt-get -y install ${depend}
+for i in gcc gcc-c++ clang autoconf automake pkg-config git wget curl unzip
+do
+  yum install $i
 done
+apt-get -y update
+apt -y install build-essential unzip gzip wget curl autoconf automake gcc make git
 
 
 libev_ver="4.27"
