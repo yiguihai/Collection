@@ -112,7 +112,7 @@ find /data/data/com.termux/files/home/shadowsocks-libev/ -name "Makefile" -type 
 
 #修改源码
 
-make -j4
+make -j
 find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs aarch64-linux-android-strip
 #find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs arm-linux-androideabi-strip
 find /data/data/com.termux/files/home/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
