@@ -85,11 +85,10 @@ make clean
 cd
 
 #openssl
-#wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
-#tar zxvf openssl-1.1.1.tar.gz
-#rm -rf openssl-1.1.1.tar.gz
-#cd openssl-1.1.1
-#./config --prefix=/data/data/com.termux/files/home/tmp LIBS=-llog
+#wget https://www.openssl.org/source/openssl-1.1.1d.tar.gz
+#tar zxvf openssl-1.1.1d.tar.gz
+#rm -rf openssl-1.1.1d.tar.gz
+#cd openssl-1.1.1d
 #./config --prefix=/data/data/com.termux/files/home/tmp -llog
 #make -j
 #make install_sw
