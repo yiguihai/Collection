@@ -1,4 +1,5 @@
 #echo | gcc -v -x c++ -E -
+#ln -s /system/lib64/libc.so libresolv.so
 
 pkg install -y openssh
 cd .ssh
