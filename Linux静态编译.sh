@@ -1,15 +1,12 @@
 #echo | gcc -v -x c++ -E -
 
-for i in gcc gcc-c++ clang autoconf automake pkg-config git wget curl unzip
-do
-  yum install $i
-done
-apt-get -y update
-apt -y install build-essential unzip gzip wget curl autoconf automake gcc make git
+apt-get update
+apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev
 
 
 libev_ver="4.27"
 libpcre_ver="8.43"
+libmbedtls_ver="2.16.3"
 
 #重新登录
 logout
@@ -20,10 +17,11 @@ mkdir /root/ss
 cd 
 
 #mbedtls
-git clone --recursive https://github.com/ARMmbed/mbedtls.git
-cd mbedtls
-git submodule update --init crypto
-make no_test -j
+wget https://tls.mbed.org/download/mbedtls-${libmbedtls_ver}-gpl.tgz
+tar xf mbedtls-${libmbedtls_ver}-gpl.tgz
+rm -rf mbedtls-${libmbedtls_ver}-gpl.tgz
+cd mbedtls-${libmbedtls_ver}
+make no_test
 make install DESTDIR=/root/tmp
 make clean
 
@@ -34,7 +32,7 @@ git clone https://github.com/jedisct1/libsodium --branch stable
 cd libsodium
 ./autogen.sh
 ./configure --prefix=/root/tmp
-make -j
+make
 make install
 make clean
 
@@ -48,7 +46,7 @@ cd libev-${libev_ver}
 chmod +x autogen.sh
 ./autogen.sh
 ./configure --prefix=/root/tmp
-make -j
+make
 make install
 make clean
 
@@ -59,7 +57,7 @@ git clone https://github.com/c-ares/c-ares
 cd c-ares
 ./buildconf
 ./configure --prefix=/root/tmp
-make -j
+make
 make install
 make clean
 
@@ -73,7 +71,7 @@ autoreconf -f -i -v
 #cd cmake
 #cmake -DCMAKE_INSTALL_PREFIX:PATH=/root/tmp ..
 ./configure --prefix=/root/tmp
-make -j
+make
 make install
 make clean
 
@@ -85,7 +83,7 @@ cd
 #rm -rf openssl-1.1.1b.tar.gz
 #cd openssl-1.1.1b
 #./config --prefix=/root/tmp LIBS=-llog
-#make -j
+#make
 #make install_sw
 
 #cd
@@ -96,7 +94,7 @@ cd
 #rm -rf zlib-1.2.11.tar.gz
 #cd zlib-1.2.11
 #./configure --prefix=/root/tmp
-#make -j
+#make
 #make install
 #make clean
 #cd
@@ -112,7 +110,7 @@ git submodule update --init --recursive
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
-make -j
+make
 find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
 #find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
 make install
