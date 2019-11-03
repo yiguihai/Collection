@@ -9,7 +9,7 @@ cat id_rsa.pub >> authorized_keys
 
 pkg update
 
-for i in clang autoconf automake libtool gettext pkg-config git wget mbedtls; do
+for i in clang autoconf automake libtool gettext pkg-config git wget; do
   pkg install -y $i
 done
 
