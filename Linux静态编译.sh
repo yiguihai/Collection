@@ -3,6 +3,7 @@
 # Installation of basic build dependencies
 ## Debian / Ubuntu
 sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev
+apt-get install --no-install-recommends gettext build-essential autoconf libtool asciidoc xmlto automake
 ## CentOS / Fedora / RHEL
 sudo yum install gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel
 ## Arch
