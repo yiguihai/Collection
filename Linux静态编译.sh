@@ -8,7 +8,6 @@ sudo yum install gettext gcc autoconf libtool automake make asciidoc xmlto c-are
 ## Arch
 sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares libev
 
-# tar -xvJf no.tar.xz
 
 libev_ver="4.27"
 libpcre_ver="8.43"
@@ -83,6 +82,11 @@ make clean
 
 cd
 
+#upx
+wget https://github.com/upx/upx/releases/download/v3.95/upx-3.95-amd64_linux.tar.xz
+tar -xvJf upx-3.95-amd64_linux.tar.xz
+mv -f upx-3.95-amd64_linux/upx /usr/local/bin
+rm -rf upx-3.95-amd64_*
 #openssl
 #wget https://www.openssl.org/source/openssl-1.1.1b.tar.gz
 #tar zxvf openssl-1.1.1b.tar.gz
@@ -103,7 +107,8 @@ cd
 #make
 #make install
 #make clean
-#cd
+
+cd
 
 #shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
