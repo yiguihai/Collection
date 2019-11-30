@@ -28,3 +28,9 @@ $NDK/build/tools/make_standalone_toolchain.py \
 --enable-shared=no
 
 $LDD -d ss-local
+
+wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.13.4.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+go tool dist list
+env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
