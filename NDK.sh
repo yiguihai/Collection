@@ -23,5 +23,5 @@ $NDK/build/tools/make_standalone_toolchain.py \
     
 ./configure \
 --host=$target_host \
---prefix=/root/tmp \
+--prefix=/root/android-arm-toolchain/sysroot/usr \
 --enable-shared=no
