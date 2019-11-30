@@ -16,6 +16,7 @@ $NDK/build/tools/make_standalone_toolchain.py \
     export CXX=armv7a-linux-androideabi16-clang++
     export LD=$target_host-ld
     export STRIP=$target_host-strip
+    export LDD=$target_host-readelf
 
     # Tell configure what flags Android requires.
     export CFLAGS="-fPIE -fPIC"
