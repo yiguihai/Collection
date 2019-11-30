@@ -26,3 +26,5 @@ $NDK/build/tools/make_standalone_toolchain.py \
 --host=$target_host \
 --prefix=/root/android-arm-toolchain/sysroot/usr \
 --enable-shared=no
+
+$LDD -d ss-local
