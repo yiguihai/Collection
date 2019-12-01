@@ -64,10 +64,13 @@ https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh
 --host=$target_host \
 --prefix=/root/android-arm64-toolchain/sysroot/usr \
 --enable-shared=no
+
 #查看编译好的二进制链接库了那些库
 $LDD -d ss-local
+
 #减小体积
 $STRIP ss-local
+
 #upx压缩 3.9.4版本可用 高版本报错
 upx --best -v ss-local
 
@@ -113,7 +116,7 @@ make clean
 wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.13.4.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
-#查看支持的平台
+#查看编译支持的平台
 go tool dist list
 env GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
 #termux
