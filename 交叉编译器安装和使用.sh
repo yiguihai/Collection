@@ -84,6 +84,7 @@ make -j8
 make install_sw
 
 #编译pcre
+autoreconf -f -i -v
 ./configure \
 --host=$target_host \
 --prefix=/root/android-arm64-toolchain/sysroot/usr \
