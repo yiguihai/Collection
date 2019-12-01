@@ -1,5 +1,10 @@
 #echo | gcc -v -x c++ -E -
 #ln -s /system/lib64/libc.so libresolv.so
+#for i in /sdcard/src/* ;do
+  #if [[ $(cat $i|grep -i android) ]];then
+    #echo $i
+  #fi
+#done
 
 pkg install -y openssh
 cd .ssh
