@@ -2,7 +2,7 @@
 #ln -s /system/lib64/libc.so libresolv.so
 #for i in /sdcard/src/* ;do
   #if [[ $(cat $i|grep -i android) ]];then
-    #echo $i
+    #echo ${i##*/}
   #fi
 #done
 
