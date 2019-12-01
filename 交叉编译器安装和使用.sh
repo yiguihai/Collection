@@ -81,7 +81,7 @@ mkdir /root/ssl
 export ANDROID_NDK_HOME=/root/android-arm64-toolchain
 ./Configure -llog no-shared no-comp no-hw no-engine --openssldir=/root/ssl --prefix=/root/ssl android-arm64
 make -j8
-make install
+make install_sw
 
 #编译pcre
 ./configure \
