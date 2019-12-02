@@ -121,4 +121,4 @@ export PATH=$PATH:/usr/local/go/bin
 go tool dist list
 env GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
 #termux
-env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
+env CGO_ENABLED=1 GOOS=android GOARCH=arm64 go build -ldflags "-s -w"
