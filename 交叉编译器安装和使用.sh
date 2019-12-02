@@ -119,6 +119,7 @@ tar -C /usr/local -xzf go1.13.4.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 #查看编译支持的平台
 go tool dist list
+#交叉编译不同平台时需要配置ndk工具链($cc与$home)
 env CGO_ENABLED=1 GOOS=android GOARCH=arm64 go build -ldflags "-s -w"
 #termux
 env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
