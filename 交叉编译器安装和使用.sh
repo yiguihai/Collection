@@ -77,12 +77,12 @@ upx --best -v ss-local
 
 
 #编译openssl
-#不要设置CC全局编译环境变量，否则报错
+#不要设置CC等全局编译环境变量，会自动查找编译器设置了会报错
 mkdir /root/ssl
 export ANDROID_NDK_HOME=/root/android-arm64-toolchain
 git clone https://github.com/openssl/openssl
+cd openssl
 git submodule update --init --recursive
-cd ssl
 ./Configure -llog no-shared no-comp no-engine --openssldir=/root/ssl --prefix=/root/ssl android-arm64
 #./Configure no-shared no-afalgeng no-asm no-async no-autoalginit no-autoerrinit no-autoload-config no-capieng no-cmp no-cms no-comp no-ct no-deprecated no-dgram no-dso no-ec2m no-ec no-engine no-err no-filenames no-fips no-gost no-legacy no-makedepend no-module no-multiblock no-nextprotoneg no-ocsp no-padlockeng no-pic no-pinshared no-posix-io no-psk no-rdrand no-rfc3779 no-sock no-srp no-srtp no-sse2 no-static-engine no-stdio no-tests no-threads no-ts no-uplink --cross-compile-prefix=aarch64-linux-android29- --openssldir=/root/ssl --prefix=/root/ssl -llog android-arm64
 make -j8
