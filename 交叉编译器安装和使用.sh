@@ -10,17 +10,17 @@ https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh
 /root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
 --arch arm \
 --api 21 \
---install-dir /root/android-arm64-toolchain
+--install-dir /root/android-arm-21-toolchain
 
 #安装arm64位版本
 /root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
 --arch arm64 \
 --api 29 \
---install-dir /root/android-arm64-toolchain
+--install-dir /root/android-arm64-29-toolchain
 
 #配置交叉编译环境变量(arm32)
 # Add the standalone toolchain to the search path.
-    export PATH=$PATH:/root/android-arm-toolchain/bin
+    export PATH=$PATH:/root/android-arm-21-toolchain/bin
 
     # Tell configure what tools to use.
     target_host=arm-linux-androideabi
@@ -38,12 +38,12 @@ https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh
 #一般编译   
 ./configure \
 --host=$target_host \
---prefix=/root/android-arm-toolchain/sysroot/usr \
+--prefix=/root/android-arm-21-toolchain/sysroot/usr \
 --enable-shared=no
 
 #配置交叉编译环境变量(arm64)
 # Add the standalone toolchain to the search path.
-    export PATH=$PATH:/root/android-arm64-toolchain/bin
+    export PATH=$PATH:/root/android-arm64-29-toolchain/bin
 
     # Tell configure what tools to use.
     target_host=aarch64-linux-android
@@ -62,7 +62,7 @@ https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh
 #一般编译
 ./configure \
 --host=$target_host \
---prefix=/root/android-arm64-toolchain/sysroot/usr \
+--prefix=/root/android-arm64-29-toolchain/sysroot/usr \
 --enable-shared=no
 
 #查看编译好的二进制链接库了那些库
@@ -79,7 +79,7 @@ upx --best -v ss-local
 #编译openssl
 #不要设置CC等全局编译环境变量，会自动查找编译器设置了会报错
 mkdir /root/ssl
-export ANDROID_NDK_HOME=/root/android-arm64-toolchain
+export ANDROID_NDK_HOME=/root/android-arm64-29-toolchain
 git clone https://github.com/openssl/openssl
 cd openssl
 git submodule update --init --recursive
@@ -92,7 +92,7 @@ make install_sw
 autoreconf -f -i -v
 ./configure \
 --host=$target_host \
---prefix=/root/android-arm64-toolchain/sysroot/usr \
+--prefix=/root/android-arm64-29-toolchain/sysroot/usr \
 --enable-shared=no
 #需要注意pcre库编译此动态库是有玄学报错问题所以不编译。一般链接静态库使用即可
 
