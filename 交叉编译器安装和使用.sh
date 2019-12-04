@@ -6,6 +6,12 @@ rm -f android-ndk-r20-linux-x86_64.zip
 #API级别
 https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh-CN
 
+#安装upx压缩
+wget https://github.com/upx/upx/releases/download/v3.95/upx-3.95-amd64_linux.tar.xz
+tar -xvJf upx-3.95-amd64_linux.tar.xz
+mv -f upx-3.95-amd64_linux/upx /usr/local/bin
+rm -rf upx-3.95-amd64_*
+
 #安装arm位版本
 /root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
 --arch arm \
