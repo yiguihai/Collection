@@ -115,7 +115,7 @@ find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-
 #修改源码
 for i in /root/shadowsocks-libev/src/* ;do
   if [[ $(grep -i 'android' $i) ]];then
-    echo ${$i##*/}
+    echo ${i##*/}
   fi
 done
 #需要修改以上文件的的代码，否则报错
