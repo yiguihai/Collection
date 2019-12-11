@@ -125,8 +125,8 @@ find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xarg
 make install
 make clean
 
-wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.13.4.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 #查看编译支持的平台
 go tool dist list
