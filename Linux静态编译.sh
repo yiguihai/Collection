@@ -9,7 +9,7 @@ sudo yum install gettext gcc autoconf libtool automake make asciidoc xmlto c-are
 sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares libev
 
 
-libev_ver="4.27"
+libev_ver="4.31"
 libpcre_ver="8.43"
 libmbedtls_ver="2.16.3"
 
