@@ -1,3 +1,4 @@
+apt-get install --no-install-recommends build-essential autoconf libtool automake git unzip
 #下载编译器，非常珍贵的记录
 wget https://archive.openwrt.org/snapshots/trunk/ramips/mt7620/OpenWrt-Toolchain-ramips-mt7620_gcc-5.3.0_musl-1.1.16.Linux-x86_64.tar.bz2
 tar -vjf OpenWrt-Toolchain-ramips-mt7620_gcc-5.3.0_musl-1.1.16.Linux-x86_64.tar.bz2
@@ -15,5 +16,5 @@ export LDD=$target_host-readelf
 
 ./configure \
 --host=$target_host \
---prefix=/root/tmp \
---enable-shared=no
+--prefix=/root/tmp
+
