@@ -18,6 +18,7 @@ export LDD=$target_host-readelf
 --host=$target_host \
 --prefix=/root/tmp
 
+#编译pcre关闭一些选项不然编译不通过
 
 
 ./configure --host=$target_host --disable-ssp --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss
@@ -30,4 +31,3 @@ find ~/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:li
 
 find ~/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
 find ~/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
-
