@@ -1,0 +1,24 @@
+记录一下
+
+
+不想看教程的同学可以先尝试一下网上通用的telnet密码，本人获取到的telnet密码是 <光猫后的两者密码组合>
+打开临时telnet 的方式，192.168.1.1:8080/cgi-bin/telnetenable.cgi?telnetenable=1
+以下光猫超密的获取可以用在大部分其它的光猫上
+
+
+telnet 192.168.1.1
+
+用户名为 useradmin
+密码 abcd
+
+输入 cat /var/tel_passwd 这个我也不记得在哪里看到的方法
+
+即可得到 普通密码和root用户密码
+
+输入 su
+输入得到的root密码
+
+即可变root用户 由$变#
+
+cat /flash/cfg/agentconf/factory.conf
+即可得到全部信息，赶紧保存
