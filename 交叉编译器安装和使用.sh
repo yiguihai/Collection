@@ -100,7 +100,7 @@ autoreconf -f -i -v
 --host=$target_host \
 --prefix=/root/android-arm64-29-toolchain/sysroot/usr \
 --enable-shared=no
-#需要注意pcre库编译此动态库是有玄学报错问题所以不编译。一般链接静态库使用即可
+#需要关闭一些选项不然编译不通过
 
 #编译shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
