@@ -19,7 +19,7 @@ export LDD=$target_host-readelf
 --host=$target_host \
 --prefix=/root/tmp
 --disable-cpp
-#编译pcre关闭一些选项不然编译不通过 
+#编译pcre关闭一些选项不然编译不通过 --disable-cpp
 
 
 ./configure --host=$target_host --disable-ssp --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss
