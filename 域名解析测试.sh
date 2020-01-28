@@ -40,12 +40,13 @@ thread()(
                     echo "$1 $x $m/${all_line:-0}"
                     data_json=$(wget -qO- --no-check-certificate -T3 -U 'curl/7.65.0' http://ip.taobao.com/service/getIpInfo.php?ip=$i 2>/dev/null)
                     country_id=$(jsonfilter -s $data_json -e '@.data.country_id')
+					region=$(jsonfilter -s $data_json -e '@.data.region')
                     sleep $x
                 done
-                if [ "$country_id" = "CN" ]; then
+                if [ "$country_id" = "CN" -a "$region" != "香港" -a "$region" != "澳门" -a "$region" != "台湾" ]; then
                     echo $i >> /root/ss/conf/CN.txt
                 fi
-                if [ -z "$country_id" -o -z  "$country_id" ]; then
+                if [ -z "data_json" -o -z  "$country_id" ]; then
                     echo "$1 查询失败"
                     echo "$1 查询失败" >> /root/ss/conf/Fail.log
                 fi
@@ -60,7 +61,7 @@ thread()(
 
 m=0
 s=0
-t=2 #并发数
+t=5 #并发数
 while IFS= read -r line; do
   ((m++))
   ((s++))
