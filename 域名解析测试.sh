@@ -39,8 +39,8 @@ thread()(
                     ((x++))
                     echo "$1 $x $m/${all_line:-0}"
                     data_json=$(wget -qO- --no-check-certificate -T3 -U 'curl/7.65.0' http://ip.taobao.com/service/getIpInfo.php?ip=$i 2>/dev/null)
-                    country_id=$(jsonfilter -s $data_json -e '@.data.country_id')
-					region=$(jsonfilter -s $data_json -e '@.data.region')
+                    country_id=$(jsonfilter -s "$data_json" -e '@.data.country_id')
+		    region=$(jsonfilter -s "$data_json" -e '@.data.region')
                     sleep $x
                 done
                 if [ "$country_id" = "CN" -a "$region" != "香港" -a "$region" != "澳门" -a "$region" != "台湾" ]; then
