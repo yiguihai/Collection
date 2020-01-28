@@ -44,7 +44,14 @@ thread()(
                     sleep $x
                 done
                 if [ "$country_id" = "CN" -a "$region" != "香港" -a "$region" != "澳门" -a "$region" != "台湾" ]; then
-                    echo $i >> /root/ss/conf/CN.txt
+	            while IFS= read -r line; do
+	                if [ ${i%%.*} = ${line%%.*} ]; then
+		            check=fail
+		        fi
+	            done < /root/ss/conf/CN.txt
+		    if [ -z "$check" ]; then
+	                echo $i >> /root/ss/conf/CN.txt
+		    fi
                 fi
                 if [ -z "data_json" -o -z  "$country_id" ]; then
                     echo "$1 查询失败"
@@ -61,7 +68,7 @@ thread()(
 
 m=0
 s=0
-t=5 #并发数
+t=15 #并发数
 while IFS= read -r line; do
   ((m++))
   ((s++))
