@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#tcp_list=($(grep " accepted" /var/log/redsocks.log|egrep -o "[0-9]{1,3}(\.[0-9]{1,3}){3}"))
-#udp_list=($(grep "Starting UDP relay" /var/log/redsocks.log|egrep -o "[0-9]{1,3}(\.[0-9]{1,3}){3}"))
 ip_array=($(grep -E " accepted|Starting UDP relay" /var/log/redsocks.log|egrep -o "[0-9]{1,3}(\.[0-9]{1,3}){3}"|egrep -v "^192\.168|^172\.1[6-9]\.|^172\.2[0-9]\.|^172\.3[0-2]\.|^10\.|^127\.|^255\.|^0\."))
+echo > /var/log/redsocks.log
+
 if [ ! -f /root/ip.log ]; then
     touch /root/ip.log
 fi
@@ -22,7 +22,7 @@ for ((i=0;i<${#ip_array[@]};i++)); do
 		    data_json=$(wget -qO- --no-check-certificate -U 'curl/7.65.0' http://ip-api.com/json/$address 2>/dev/null)
 		    country=$(jsonfilter -s "$data_json" -e '@.countryCode' 2> /dev/null)
 		    if [ "${country:-null}" = "CN" ]; then
-            echo "$address" >> /root/CN.txt
+				echo "$address" >> /root/CN.txt
 		    fi
 		done
 		echo "$address" >> /root/ip.log
@@ -30,5 +30,4 @@ for ((i=0;i<${#ip_array[@]};i++)); do
 	fi
 	unset repeat address x data_json country
 done
-echo > /var/log/redsocks.log
 echo "done"
