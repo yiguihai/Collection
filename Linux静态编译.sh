@@ -83,10 +83,10 @@ make clean
 cd
 
 #upx
-wget https://github.com/upx/upx/releases/download/v3.95/upx-3.95-amd64_linux.tar.xz
-tar -xvJf upx-3.95-amd64_linux.tar.xz
-mv -f upx-3.95-amd64_linux/upx /usr/local/bin
-rm -rf upx-3.95-amd64_*
+wget https://github.com/upx/upx/releases/download/v3.95/upx-3.96-amd64_linux.tar.xz
+tar -xvJf upx-3.96-amd64_linux.tar.xz
+mv -f upx-3.96-amd64_linux/upx /usr/local/bin
+rm -rf upx-3.96-amd64_*
 #openssl
 #wget https://www.openssl.org/source/openssl-1.1.1b.tar.gz
 #tar zxvf openssl-1.1.1b.tar.gz
@@ -118,7 +118,7 @@ git submodule update --init --recursive
 #静态编译需要链接 libc.a 等库下面是在 /usr/lib 目录路径
 ./configure --disable-ssp --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss  LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
 
-#查找替换
+#查找替换 链接第三方静态库
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
