@@ -2,7 +2,7 @@
 
 # Installation of basic build dependencies
 ## Debian / Ubuntu
-sudo apt-get install --no-install-recommends gettext build-essential autoconf libtool asciidoc xmlto automake git unzip
+sudo apt-get install --no-install-recommends build-essential autoconf libtool automake git unzip
 ## CentOS / Fedora / RHEL
 sudo yum install gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel
 ## Arch
@@ -11,7 +11,7 @@ sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares 
 
 libev_ver="4.31"
 libpcre_ver="8.43"
-libmbedtls_ver="2.16.3"
+libmbedtls_ver="2.16.4"
 
 #重新登录
 logout
@@ -115,7 +115,8 @@ git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
 git submodule update --init --recursive
 ./autogen.sh
-./configure --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss
+#静态编译需要链接 libc.a 等库下面是在 /usr/lib 目录路径
+./configure --disable-ssp --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss  LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
 
 #查找替换
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
