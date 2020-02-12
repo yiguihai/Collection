@@ -83,7 +83,7 @@ make clean
 cd
 
 #upx
-wget https://github.com/upx/upx/releases/download/v3.95/upx-3.96-amd64_linux.tar.xz
+wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
 tar -xvJf upx-3.96-amd64_linux.tar.xz
 mv -f upx-3.96-amd64_linux/upx /usr/local/bin
 rm -rf upx-3.96-amd64_*
