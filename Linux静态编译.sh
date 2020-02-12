@@ -4,7 +4,7 @@
 ## Debian / Ubuntu
 sudo apt-get install --no-install-recommends build-essential autoconf libtool automake git unzip
 ## CentOS / Fedora / RHEL
-sudo yum install gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel
+yum -y install gcc gcc-c++ autoconf libtool automake make git unzip
 ## Arch
 sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares libev
 
@@ -124,6 +124,6 @@ find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lso
 find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
 make
 find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
-find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best -v
+find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best --ultra-brute -v
 make install
 make clean
