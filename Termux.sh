@@ -24,8 +24,8 @@ logout
 mkdir /data/data/com.termux/files/home/tmp
 mkdir /data/data/com.termux/files/home/ss
 
-libev_ver="4.27"
-libpcre_ver="8.43"
+libev_ver="4.33"
+libpcre_ver="8.44"
 
 cd 
 
