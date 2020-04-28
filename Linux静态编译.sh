@@ -9,9 +9,9 @@ yum -y install gcc gcc-c++ autoconf libtool automake make git unzip
 sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares libev
 
 
-libev_ver="4.31"
-libpcre_ver="8.43"
-libmbedtls_ver="2.16.4"
+libev_ver="4.33"
+libpcre_ver="8.44"
+libmbedtls_ver="2.16.6"
 
 #重新登录
 logout
