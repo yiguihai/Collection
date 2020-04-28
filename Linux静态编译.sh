@@ -12,14 +12,15 @@ sudo pacman -S gettext gcc autoconf libtool automake make asciidoc xmlto c-ares 
 libev_ver="4.33"
 libpcre_ver="8.44"
 libmbedtls_ver="2.16.6"
+tmp="/tmp"
 
 #重新登录
 logout
 
-mkdir /root/tmp
-mkdir /root/ss
+mkdir $tmp/tmp
+mkdir $tmp/ss
 
-cd 
+cd $tmp
 
 #mbedtls
 wget https://tls.mbed.org/download/mbedtls-${libmbedtls_ver}-gpl.tgz
@@ -27,21 +28,21 @@ tar xf mbedtls-${libmbedtls_ver}-gpl.tgz
 rm -rf mbedtls-${libmbedtls_ver}-gpl.tgz
 cd mbedtls-${libmbedtls_ver}
 make no_test
-make install DESTDIR=/root/tmp
+make install DESTDIR=$tmp/tmp
 make clean
 
-cd 
+cd $tmp
 
 #libsodium
 git clone https://github.com/jedisct1/libsodium --branch stable
 cd libsodium
 ./autogen.sh
-./configure --prefix=/root/tmp
+./configure --prefix=$tmp/tmp
 make
 make install
 make clean
 
-cd 
+cd $tmp
 
 #libev
 wget http://dist.schmorp.de/libev/libev-${libev_ver}.tar.gz
@@ -50,23 +51,23 @@ rm -rf libev-${libev_ver}.tar.gz
 cd libev-${libev_ver}
 chmod +x autogen.sh
 ./autogen.sh
-./configure --prefix=/root/tmp
+./configure --prefix=$tmp/tmp
 make
 make install
 make clean
 
-cd
+cd $tmp
 
 #libcares
 git clone https://github.com/c-ares/c-ares
 cd c-ares
 ./buildconf
-./configure --prefix=/root/tmp
+./configure --prefix=$tmp/tmp
 make
 make install
 make clean
 
-cd
+cd $tmp
 
 #libpcre
 wget https://ftp.pcre.org/pub/pcre/pcre-${libpcre_ver}.zip
@@ -75,12 +76,12 @@ cd pcre-${libpcre_ver}
 autoreconf -f -i -v
 #cd cmake
 #cmake -DCMAKE_INSTALL_PREFIX:PATH=/root/tmp ..
-./configure --prefix=/root/tmp
+./configure --prefix=$tmp/tmp
 make
 make install
 make clean
 
-cd
+cd $tmp
 
 #upx
 wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
@@ -108,7 +109,7 @@ rm -rf upx-3.96-amd64_*
 #make install
 #make clean
 
-cd
+cd $tmp
 
 #shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
@@ -116,14 +117,14 @@ cd shadowsocks-libev
 git submodule update --init --recursive
 ./autogen.sh
 #静态编译需要链接 libc.a 等库下面是在 /usr/lib 目录路径
-./configure --disable-ssp --disable-documentation --with-ev=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-pcre=/root/tmp --with-mbedtls=/root/tmp --prefix=/root/ss  LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
+./configure --disable-ssp --disable-documentation --with-ev=$tmp/tmp --with-sodium=$tmp/tmp --with-cares=$tmp/tmp --with-pcre=$tmp/tmp --with-mbedtls=$tmp/tmp --prefix=$tmp/ss  LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
 
 #查找替换 链接第三方静态库
-find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
-find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
-find /root/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
+find $tmp/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
+find $tmp/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev -lsodium/-l:libev.a -l:libsodium.a/g' {} +
+find $tmp/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lcares/-l:libcares.a/g' {} +
 make
-find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
-find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best --ultra-brute -v
+find $tmp/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs strip
+find $tmp/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xargs upx --best --ultra-brute -v
 make install
 make clean
