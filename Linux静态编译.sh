@@ -117,7 +117,17 @@ cd shadowsocks-libev
 git submodule update --init --recursive
 ./autogen.sh
 #静态编译需要链接 libc.a 等库下面是在 /usr/lib 目录路径
-./configure --disable-ssp --disable-documentation --with-ev=$tmp/tmp --with-sodium=$tmp/tmp --with-cares=$tmp/tmp --with-pcre=$tmp/tmp --with-mbedtls=$tmp/tmp --prefix=$tmp/ss  LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
+./configure \
+--disable-ssp \
+--disable-documentation \
+--with-ev=$tmp/tmp \
+--with-sodium=$tmp/tmp \
+--with-cares=$tmp/tmp \
+--with-pcre=$tmp/tmp \
+--with-mbedtls=$tmp/tmp \
+--prefix=$tmp/ss \
+LDFLAGS="-Wl,-static -static -static-libgcc -L/usr/lib" \
+CFLAGS="-I/usr/include" LIBS="-lpthread -lm"
 
 #查找替换 链接第三方静态库
 find $tmp/shadowsocks-libev/ -name "Makefile" -type f -exec sed -i 's/-lev  -lcares -lsodium -lmbedcrypto -lpcre/-l:libev.a  -l:libcares.a -l:libsodium.a -l:libmbedcrypto.a -l:libpcre.a/g' {} +
