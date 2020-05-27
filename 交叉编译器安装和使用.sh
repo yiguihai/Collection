@@ -132,6 +132,15 @@ find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xarg
 make install
 make clean
 
+#cmake交叉编译
+#在cmake目录创建一个 CrossCompile.cmake 文件写入
+#set(CMAKE_SYSTEM_NAME Linux)
+#set(CMAKE_C_COMPILER "arm-openwrt-linux-gcc")
+#set(CMAKE_CXX_COMPILER "arm-openwrt-linux-g++") 
+#set(CMAKE_FIND_ROOT_PATH /tmp/tmp /tmp/openwrt-sdk-19.07.3-bcm53xx_gcc-7.5.0_musl_eabi.Linux-x86_64/staging_dir/toolchain-arm_cortex-a9_gcc-7.5.0_musl_eabi)
+#然后返回源码目录创建build目录进入，输入 cmake -DCMAKE_TOOLCHAIN_FILE=刚才的路径/CrossCompile.cmake ..
+#参考 https://zhuanlan.zhihu.com/p/100367053
+
 wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
