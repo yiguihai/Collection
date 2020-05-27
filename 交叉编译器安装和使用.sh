@@ -71,6 +71,13 @@ rm -rf upx-3.95-amd64_*
 --prefix=/root/android-arm64-29-toolchain/sysroot/usr \
 --enable-shared=no
 
+#https://blog.csdn.net/qq_15437629/article/details/85808229
+#Makefile选项CFLAGS,LDFLAGS,LIBS
+#    CFLAGS 表示用于 C 编译器的选项，CXXFLAGS 表示用于 C++ 编译器的选项。这两个变量实际上涵盖了编译和汇编两个步骤。
+#    CFLAGS： 指定头文件（.h文件）的路径，如：CFLAGS=-I /usr/include -I /path/include。同样地，安装一个包时会在安装路径下建立一个include目录，当安装过程中出现问题时，试着把以前安装的包的include目录加入到该变量中来。
+#    LDFLAGS：gcc 等编译器会用到的一些优化参数，也可以在里面指定库文件的位置。用法：LDFLAGS=-static -L /usr/lib -L /path/to/your/lib。每安装一个包都几乎一定的会在安装目录里建立一个lib目录。如果明明安装了某个包，而安装另一个包时，它愣是说找不到，可以抒那个包的lib路径加入的LDFALGS中试一下。
+#    LIBS：告诉链接器要链接哪些库文件，如LIBS = -lpthread -liconv
+
 #查看编译好的二进制链接库了那些库
 $LDD -d ss-local
 
