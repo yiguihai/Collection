@@ -97,7 +97,58 @@ git clone https://github.com/openssl/openssl
 cd openssl
 git submodule update --init --recursive
 ./Configure -llog no-shared no-comp no-engine --openssldir=/root/ssl --prefix=/root/ssl android-arm64
-#./Configure no-shared no-afalgeng no-asm no-async no-autoalginit no-autoerrinit no-autoload-config no-capieng no-cmp no-cms no-comp no-ct no-deprecated no-dgram no-dso no-ec2m no-ec no-engine no-err no-filenames no-fips no-gost no-legacy no-makedepend no-module no-multiblock no-nextprotoneg no-ocsp no-padlockeng no-pic no-pinshared no-posix-io no-psk no-rdrand no-rfc3779 no-sock no-srp no-srtp no-sse2 no-static-engine no-stdio no-tests no-threads no-ts no-uplink --cross-compile-prefix=aarch64-linux-android29- --openssldir=/root/ssl --prefix=/root/ssl -llog android-arm64
+#./Configure \
+no-shared \
+no-afalgeng \
+no-asm \
+no-async \
+no-autoalginit \
+no-autoerrinit \
+no-autoload-config \
+no-capieng \
+no-cmp \
+no-cms \
+no-comp \
+no-ct \
+no-deprecated \
+no-dgram \
+no-dso \
+no-ec2m \
+no-ec \
+no-engine \
+no-err \
+no-filenames \
+no-fips \
+no-gost \
+no-legacy \
+no-makedepend \
+no-module \
+no-multiblock \
+no-nextprotoneg \
+no-ocsp \
+no-padlockeng \
+no-pic \
+no-pinshared \
+no-posix-io \
+no-psk \
+no-rdrand \
+no-rfc3779 \
+no-sock \
+no-srp \
+no-srtp \
+no-sse2 \
+no-static-engine \
+no-stdio \
+no-tests \
+no-threads \
+no-ts \
+no-uplink \
+--cross-compile-prefix=aarch64-linux-android29- \
+--openssldir=/root/ssl \
+--prefix=/root/ssl \
+-llog \
+android-arm64
+
 make -j8
 make install_sw
 
