@@ -1,0 +1,17 @@
+{
+  "listen": ":67",
+  "target": "127.0.0.1:8888",
+  "key": "xxx",
+  "crypt": "none",
+  "mode": "fast",
+  "mtu": 1400,
+  "sndwnd": 1024,
+  "rcvwnd": 1024,
+  "datashard": 10,
+  "parityshard": 1,
+  "dscp": 46,
+  "nocomp": true,
+  "quiet": true,
+  "tcp": false,
+  "pprof": false
+}
