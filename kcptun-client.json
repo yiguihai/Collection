@@ -1,0 +1,20 @@
+{
+  "localaddr": "127.0.0.1:1028",
+  "remoteaddr": "1.2.3.4:67",
+  "key": "xxx",
+  "crypt": "none",
+  "mode": "fast",
+  "conn": 10,
+  "autoexpire": 60,
+  "scavengettl": 2,
+  "mtu": 1400,
+  "sndwnd": 1024,
+  "rcvwnd": 1024,
+  "datashard": 10,
+  "parityshard": 1,
+  "dscp": 46,
+  "keepalive": 10,
+  "nocomp": true,
+  "quiet": false,
+  "tcp": false
+}
