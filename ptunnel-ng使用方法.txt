@@ -3,6 +3,9 @@
 参考教程
 https://m.isolves.com/it/aq/hk/2020-06-21/21154.html
 
+源码仓
+https://github.com/lnslbrty/ptunnel-ng
+
 服务端运行
 ./ptunnel-ng -c1024 -v4
 
