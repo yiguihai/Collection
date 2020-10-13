@@ -2,7 +2,7 @@
 
 
 不想看教程的同学可以先尝试一下网上通用的telnet密码，本人获取到的telnet密码是 <光猫后的两者密码组合>
-打开临时telnet 的方式，192.168.1.1:8080/cgi-bin/telnetenable.cgi?telnetenable=1
+打开临时telnet 的方式，http://192.168.1.1:8080/cgi-bin/telnetenable.cgi?telnetenable=1
 以下光猫超密的获取可以用在大部分其它的光猫上
 
 
