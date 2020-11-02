@@ -12,7 +12,7 @@ tar -xvJf upx-3.95-amd64_linux.tar.xz
 mv -f upx-3.95-amd64_linux/upx /usr/local/bin
 rm -rf upx-3.95-amd64_*
 
-#安装arm位版本
+#安装arm版本
 /root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
 --arch arm \
 --api 21 \
