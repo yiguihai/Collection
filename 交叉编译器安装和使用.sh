@@ -2,7 +2,7 @@
 #str=$(wget -qO- https://developer.android.com/ndk/downloads/|grep 'Latest Stable Version')
 #str=${str##*(}
 #latest_version=${str%)*}
-wget --quiet --continue https://dl.google.com/android/repository/android-ndk-${latest_version}-linux-x86_64.zip
+#wget --quiet --continue https://dl.google.com/android/repository/android-ndk-${latest_version}-linux-x86_64.zip
 wget https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip
 unzip android-ndk-r20-linux-x86_64.zip
 rm -f android-ndk-r20-linux-x86_64.zip
