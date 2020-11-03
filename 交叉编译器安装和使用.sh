@@ -81,7 +81,7 @@ autoreconf -f -i -v
 --enable-shared=no
 #需要关闭一些选项不然编译不通过 --disable-cpp
 
-#编译shadowsocks
+#编译shadowsocks-libev
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
 git submodule update --init --recursive
@@ -104,6 +104,23 @@ find /root/shadowsocks-libev/src ! -name 'ss-nat' -a -name 'ss-*' -type f | xarg
 make install
 make clean
 
+#编译shadowsocks-rust
+#先安装rust并编译好openssl依赖
+git clone --depth 1 https://github.com/shadowsocks/shadowsocks-rust.git
+cd shadowsocks-rust
+#rustup target list|grep android
+rustup target add aarch64-linux-android
+mkdir -p .cargo
+cat >.cargo/config <<EOF
+[target.aarch64-linux-android]
+linker = "aarch64-linux-android-gcc"
+ar = "aarch64-linux-android-ar"
+EOF
+env OPENSSL_STATIC=yes \
+OPENSSL_LIB_DIR=/tmp/ssl/lib \
+OPENSSL_INCLUDE_DIR=/tmp/ssl/include \
+cargo build --release --target aarch64-linux-android
+
 #cmake交叉编译
 #在cmake目录创建一个 CrossCompile.cmake 文件写入
 #set(CMAKE_SYSTEM_NAME Linux)
@@ -113,8 +130,11 @@ make clean
 #然后返回源码目录创建build目录进入，输入 cmake -DCMAKE_TOOLCHAIN_FILE=刚才的路径/CrossCompile.cmake ..
 #参考 https://zhuanlan.zhihu.com/p/100367053
 
-wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
+#golang工具链安装
+latest_version="$(wget -qO- https://golang.org/dl/|grep 'download downloadBox' | grep -oP '\d+\.\d+(\.\d+)?' | head -n 1)"
+wget --quiet --continue --show-progress https://dl.google.com/go/go${latest_version}.linux-amd64.tar.gz
+tar -C /usr/local -xzf go${latest_version}.linux-amd64.tar.gz
+rm -f go${latest_version}.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 #查看编译支持的平台
 go tool dist list
