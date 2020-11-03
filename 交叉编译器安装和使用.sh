@@ -1,55 +1,25 @@
 #下载NDK工具链
-#str=$(wget -qO- https://developer.android.com/ndk/downloads/ | grep 'Latest Stable Version')
-#str=${str##*\(}
-#latest_version=${str%\)*}
-#wget --quiet --continue https://dl.google.com/android/repository/android-ndk-${latest_version}-linux-x86_64.zip
-wget https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip
-unzip android-ndk-r20-linux-x86_64.zip
-rm -f android-ndk-r20-linux-x86_64.zip
+str=$(wget -qO- https://developer.android.com/ndk/downloads/ | grep 'Latest Stable Version')
+str=${str##*\(}
+latest_version=${str%\)*}
+wget --quiet --continue --show-progress https://dl.google.com/android/repository/android-ndk-${latest_version}-linux-x86_64.zip
+unzip android-ndk-${latest_version}-linux-x86_64.zip
+rm -f android-ndk-${latest_version}-linux-x86_64.zip
 
 #API级别
 https://developer.android.com/distribute/best-practices/develop/target-sdk?hl=zh-CN
 
 #安装upx压缩
-wget https://github.com/upx/upx/releases/download/v3.95/upx-3.95-amd64_linux.tar.xz
-tar -xvJf upx-3.95-amd64_linux.tar.xz
-mv -f upx-3.95-amd64_linux/upx /usr/local/bin
-rm -rf upx-3.95-amd64_*
-
-#安装arm版本
-/root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
---arch arm \
---api 21 \
---install-dir /root/android-arm-21-toolchain
+wget https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz
+tar -xvJf upx-3.94-amd64_linux.tar.xz
+mv -f upx-3.94-amd64_linux/upx /usr/local/bin
+rm -rf upx-3.94-amd64_*
 
 #安装arm64位版本
 /root/android-ndk-r20/build/tools/make_standalone_toolchain.py \
 --arch arm64 \
 --api 29 \
 --install-dir /root/android-arm64-29-toolchain
-
-#配置交叉编译环境变量(arm32)
-# Add the standalone toolchain to the search path.
-    export PATH=$PATH:/root/android-arm-21-toolchain/bin
-
-    # Tell configure what tools to use.
-    target_host=arm-linux-androideabi
-    export AR=$target_host-ar
-    export AS=armv7a-linux-androideabi21-clang
-    export CC=armv7a-linux-androideabi21-clang
-    export CXX=armv7a-linux-androideabi21-clang++
-    export LD=$target_host-ld
-    export STRIP=$target_host-strip
-    export LDD=$target_host-readelf
-
-    # Tell configure what flags Android requires.
-    export CFLAGS="-fPIE -fPIC"
-    export LDFLAGS="-pie"
-#一般编译   
-./configure \
---host=$target_host \
---prefix=/root/android-arm-21-toolchain/sysroot/usr \
---enable-shared=no
 
 #配置交叉编译环境变量(arm64)
 # Add the standalone toolchain to the search path.
@@ -58,9 +28,9 @@ rm -rf upx-3.95-amd64_*
     # Tell configure what tools to use.
     target_host=aarch64-linux-android
     export AR=$target_host-ar
-    export AS=aarch64-linux-android29-clang
-    export CC=aarch64-linux-android29-clang
-    export CXX=aarch64-linux-android29-clang++
+    export AS=$target_host-gcc
+    export CC=$target_host-gcc
+    export CXX=$target_host-gcc++
     export LD=$target_host-ld
     export STRIP=$target_host-strip
     export LDD=$target_host-readelf
@@ -95,31 +65,11 @@ upx --best -v ss-local
 
 #编译openssl
 #不要设置CC等全局编译环境变量，会自动查找编译器设置了会报错
-mkdir /root/ssl
 export ANDROID_NDK_HOME=/root/android-arm64-29-toolchain
-git clone https://github.com/openssl/openssl
+git clone --depth 1 https://github.com/openssl/openssl
 cd openssl
 git submodule update --init --recursive
-./Configure -llog no-shared no-comp no-engine --openssldir=/root/ssl --prefix=/root/ssl android-arm64
-#./Configure \
-no-hw-xxx \
-no-hw \
-no-shared \
-no-pic \
-no-asm \
-no-egd \
-no-zlib \
-no-uplink \
-no-sse2 \
-no-rsa \
-no-idea \
-no-rc5 \
---cross-compile-prefix=aarch64-linux-android29- \
---openssldir=/root/ssl \
---prefix=/root/ssl \
--llog \
-android-arm64
-
+./Configure android-arm64 -D__ANDROID_API__=29 --prefix=/tmp/ssl
 make -j8
 make install_sw
 
