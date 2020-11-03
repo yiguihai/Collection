@@ -135,7 +135,7 @@ latest_version="$(wget -qO- https://golang.org/dl/|grep 'download downloadBox' |
 wget --quiet --continue --show-progress https://dl.google.com/go/go${latest_version}.linux-amd64.tar.gz
 tar -C /usr/local -xzf go${latest_version}.linux-amd64.tar.gz
 rm -f go${latest_version}.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin GOROOT="/usr/local/go" GOTOOLDIR="/usr/local/go/pkg/tool/linux_amd64"
 #查看编译支持的平台
 go tool dist list
 #交叉编译不同平台时需要配置ndk工具链($cc与$home)
