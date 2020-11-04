@@ -32,7 +32,7 @@ cd
 #mbedtls
 git clone --recursive https://github.com/ARMmbed/mbedtls.git
 cd mbedtls
-git submodule update --init crypto
+git submodule update --init crypto --depth 1
 make no_test -j
 make install DESTDIR=/data/data/com.termux/files/home/tmp
 make clean
@@ -103,7 +103,7 @@ cd
 #shadowsocks
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
-git submodule update --init --recursive
+git submodule update --init --recursive --depth 1
 ./autogen.sh
 ./configure --disable-documentation --with-pcre=/data/data/com.termux/files/home/tmp --with-mbedtls=/data/data/com.termux/files/home/tmp --with-sodium=/data/data/com.termux/files/home/tmp --with-cares=/data/data/com.termux/files/home/tmp --with-ev=/data/data/com.termux/files/home/tmp LIBS="-llog" --prefix=/data/data/com.termux/files/home/ss
 
