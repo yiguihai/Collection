@@ -68,7 +68,7 @@ upx --best -v ss-local
 export ANDROID_NDK_HOME=/root/android-arm64-29-toolchain
 git clone --depth 1 https://github.com/openssl/openssl
 cd openssl
-git submodule update --init --recursive
+git submodule update --init --recursive --depth 1
 ./Configure android-arm64 -D__ANDROID_API__=29 --prefix=/tmp/ssl
 make -j8
 make install_sw
@@ -84,7 +84,7 @@ autoreconf -f -i -v
 #编译shadowsocks-libev
 git clone https://github.com/shadowsocks/shadowsocks-libev.git
 cd shadowsocks-libev
-git submodule update --init --recursive
+git submodule update --init --recursive --depth 1
 ./autogen.sh
 ./configure --disable-documentation --host=$target_host --with-pcre=/root/tmp --with-mbedtls=/root/tmp --with-sodium=/root/tmp --with-cares=/root/tmp --with-ev=/root/tmp LIBS="-llog" --prefix=/root/ss
 #查找替换
