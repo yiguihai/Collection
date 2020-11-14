@@ -8,10 +8,11 @@ https://github.com/lnslbrty/ptunnel-ng
 
 服务端运行
 ./ptunnel-ng -c1024 -v4
+例:./ptunnel-ng -c1024 -v4 -d
 
 客户端
 ./ptunnel-ng -p1.1.1.1(服务端公网地址) -l1080(本地监听端口) -r192.168.1.1(需要访问的地址ip) -R22(需要访问的端口) -c256 -v4 -s
-
+例:./ptunnel-ng -p23.95.220.139 -l1080 -r127.0.0.1 -R22 -c256 -v-1 -s -S -d
 再执行
 ssh root@127.0.0.1 -p1080
 
