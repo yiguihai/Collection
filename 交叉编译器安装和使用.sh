@@ -39,6 +39,9 @@ rm -rf upx-3.94-amd64_*
     export CFLAGS="-fPIE -fPIC"
     export LDFLAGS="-pie"
 
+#GCC/G++选项 -Wl,-Bstatic和-Wl,-Bdynamic - 云+社区 - 腾讯云
+https://cloud.tencent.com/developer/article/1606039
+
 #一般编译
 ./configure \
 --host=$target_host \
